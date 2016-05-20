@@ -83,7 +83,7 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     NSLog(@"当前相册有%zd张图片", self.assetsFetchResults.count);
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger lastRow = [self.collectionView numberOfItemsInSection:0] - 1;
+        NSInteger lastRow = self.assetsFetchResults.count - 1;
         if (lastRow > 0) {
             [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
         }
