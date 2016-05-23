@@ -29,7 +29,8 @@
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
     
-//    picker.allowsMultipleSelection = NO;
+    picker.allowsMultipleSelection = YES;
+    picker.maxMultipleCount = 5;
     
     [self presentViewController:picker animated:YES completion:nil];
 }
@@ -38,12 +39,15 @@
 
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-
     NSLog(@"当前选择图片 -> %@", assets);
 }
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker {
     NSLog(@"结束选择图片");
+}
+
+- (void)assetsPickerVontrollerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker {
+    NSLog(@"超过最大可选数量 -> %zd", picker.maxMultipleCount);
 }
 
 @end

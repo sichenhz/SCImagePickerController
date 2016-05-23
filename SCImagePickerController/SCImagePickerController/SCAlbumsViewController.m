@@ -10,6 +10,7 @@
 #import "SCImagePickerController.h"
 #import "SCGridViewController.h"
 #import "SCAlbumsViewCell.h"
+#import "SCBadgeView.h"
 
 static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReuseIdentifier";
 
@@ -20,6 +21,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 @property (strong) NSArray *collectionsFetchResultsTitles;
 @property (nonatomic, weak) SCImagePickerController *picker;
 @property (strong) PHCachingImageManager *imageManager;
+@property (nonatomic, strong) SCBadgeView *badgeView;
 
 @end
 
@@ -43,11 +45,17 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
                                                                             target:self.picker
                                                                             action:@selector(dismiss:)];
     if (self.picker.allowsMultipleSelection) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
-                                                                                  style:UIBarButtonItemStyleDone
-                                                                                 target:self.picker
-                                                                                 action:@selector(finishPickingAssets:)];
-        self.navigationItem.rightBarButtonItem.enabled = self.picker.selectedAssets.count > 0;
+        UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
+                                                                           style:UIBarButtonItemStyleDone
+                                                                          target:self.picker
+                                                                          action:@selector(finishPickingAssets:)];
+        doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
+        
+        self.badgeView = [[SCBadgeView alloc] init];
+        self.badgeView.number = self.picker.selectedAssets.count;
+        UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
+        
+        self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
     }
 
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];

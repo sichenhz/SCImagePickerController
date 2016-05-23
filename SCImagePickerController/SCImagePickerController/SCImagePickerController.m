@@ -8,6 +8,7 @@
 
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
+#import "SCBadgeView.h"
 @import Photos;
 
 @interface SCImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
@@ -19,7 +20,6 @@
 - (instancetype)init {
     if (self = [super init]) {
         _selectedAssets = [[NSMutableArray alloc] init];
-        _allowsMultipleSelection = YES;
         _mediaTypes = @[@(PHAssetMediaTypeImage)];
 
         [self setupNavigationController];
@@ -70,6 +70,11 @@
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
     for (UIViewController *viewController in nav.viewControllers) {
         viewController.navigationItem.rightBarButtonItem.enabled = self.selectedAssets.count > 0;
+        if (viewController.navigationItem.rightBarButtonItems.count > 1) {
+            UIBarButtonItem *badgeButtonItem = viewController.navigationItem.rightBarButtonItems[1];
+            SCBadgeView *badgeView = badgeButtonItem.customView;
+            badgeView.number = self.selectedAssets.count;
+        }
     }
 }
 

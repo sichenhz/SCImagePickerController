@@ -15,9 +15,10 @@
 
 @property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
 
-@property (nonatomic, strong) NSArray *mediaTypes;
+@property (nonatomic, strong) NSArray *mediaTypes; //PHAssetMediaType
 
-@property (nonatomic, assign) BOOL allowsMultipleSelection;
+@property (nonatomic) BOOL allowsMultipleSelection; //default is NO
+@property (nonatomic) NSInteger maxMultipleCount;
 
 @property (nonatomic, strong) UINavigationController *navigationController;
 
@@ -33,10 +34,11 @@
 
 @protocol SCImagePickerControllerDelegate <NSObject>
 
-- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets;
+- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
 
 @optional
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
+- (void)assetsPickerVontrollerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;
 
 @end

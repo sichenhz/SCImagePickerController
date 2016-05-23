@@ -10,11 +10,13 @@
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
 #import "SCGridViewCell.h"
+#import "SCBadgeView.h"
 
 @interface SCGridViewController()
 
 @property (nonatomic, weak) SCImagePickerController *picker;
 @property (strong) PHCachingImageManager *imageManager;
+@property (nonatomic, strong) SCBadgeView *badgeView;
 
 @end
 
@@ -58,18 +60,19 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     
     self.imageManager = [[PHCachingImageManager alloc] init];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     
     if (self.picker.allowsMultipleSelection) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
-                                                                                  style:UIBarButtonItemStyleDone
-                                                                                 target:self.picker
-                                                                                 action:@selector(finishPickingAssets:)];
+        UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
+                                                                           style:UIBarButtonItemStyleDone
+                                                                          target:self.picker
+                                                                          action:@selector(finishPickingAssets:)];
+        doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
         
-        self.navigationItem.rightBarButtonItem.enabled = self.picker.selectedAssets.count > 0;
+        self.badgeView = [[SCBadgeView alloc] init];
+        self.badgeView.number = self.picker.selectedAssets.count;
+        UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
+        
+        self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
     }
 }
 
@@ -128,6 +131,17 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
 }
 
 #pragma mark - UICollectionViewDelegate
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.picker.maxMultipleCount > 0 && self.picker.maxMultipleCount == self.picker.selectedAssets.count) {
+        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerVontrollerDidOverrunMaxMultipleCount:)]) {
+            [self.picker.delegate assetsPickerVontrollerDidOverrunMaxMultipleCount:self.picker];
+        }
+        return NO;
+    } else {
+        return YES;
+    }
+}
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
