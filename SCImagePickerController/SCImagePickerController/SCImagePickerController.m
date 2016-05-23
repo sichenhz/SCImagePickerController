@@ -8,6 +8,7 @@
 
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
+#import "SCCameraViewController.h"
 #import "SCBadgeView.h"
 @import Photos;
 
@@ -22,15 +23,32 @@
         _selectedAssets = [[NSMutableArray alloc] init];
         _mediaTypes = @[@(PHAssetMediaTypeImage)];
 
-        [self setupNavigationController];
     }
     return self;
 }
 
-- (void)setupNavigationController {
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
-    _navigationController.delegate = self;
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
+    [self setupNavigationController];
+}
+
+- (void)setupNavigationController {
+    
+    UIViewController *rootVC;
+    
+    switch (self.sourceType) {
+        case SCImagePickerControllerSourceTypePhotoLibrary:
+        case SCImagePickerControllerSourceTypeSavedPhotosAlbum:
+            rootVC = [[SCAlbumsViewController alloc] init];
+            break;
+        case SCImagePickerControllerSourceTypeCamera:
+            rootVC = [[SCCameraViewController alloc] init];
+            break;
+    }
+    
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:rootVC];
+    _navigationController.delegate = self;
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];

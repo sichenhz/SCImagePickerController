@@ -21,14 +21,14 @@
         _imageView.clipsToBounds = YES;
         _imageView.translatesAutoresizingMaskIntoConstraints = NO;
         _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [self addSubview:_imageView];
+        [self.contentView addSubview:_imageView];
         
         // Selection overlay & icon
         _coverView = [[UIView alloc] initWithFrame:self.bounds];
         _coverView.translatesAutoresizingMaskIntoConstraints = NO;
         _coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _coverView.backgroundColor = [UIColor colorWithRed:0.24 green:0.47 blue:0.85 alpha:0.6];
-        [self addSubview:_coverView];
+        [self.contentView addSubview:_coverView];
         _coverView.hidden = YES;
         
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -41,14 +41,14 @@
         [_selectedButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickH.png"]] forState:UIControlStateSelected];
         _selectedButton.hidden = NO;
         _selectedButton.userInteractionEnabled = NO;
-        [self addSubview:_selectedButton];
+        [self.contentView addSubview:_selectedButton];
     }
     return self;
 }
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
-    
+
     if (!self.shouldShowSelection) {
         return;
     }

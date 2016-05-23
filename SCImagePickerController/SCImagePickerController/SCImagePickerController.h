@@ -11,9 +11,17 @@
 
 @protocol SCImagePickerControllerDelegate;
 
+typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
+    SCImagePickerControllerSourceTypePhotoLibrary,
+    SCImagePickerControllerSourceTypeCamera,
+    SCImagePickerControllerSourceTypeSavedPhotosAlbum
+};
+
 @interface SCImagePickerController : UIViewController
 
 @property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
+
+@property (nonatomic) SCImagePickerControllerSourceType sourceType; // default value is SCImagePickerControllerSourceTypePhotoLibrary.
 
 @property (nonatomic, strong) NSArray *mediaTypes; //PHAssetMediaType
 

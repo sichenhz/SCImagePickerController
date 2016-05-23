@@ -115,6 +115,13 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     
     self.collectionsFetchResultsAssets = @[smartFetchResultArray, userFetchResultArray];
     self.collectionsFetchResultsTitles = @[smartFetchResultLabel, userFetchResultLabel];
+    
+    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum && smartFetchResultArray.count > 0 && smartFetchResultLabel.count > 0) {
+        SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
+        cameraRollViewController.title = smartFetchResultLabel[0];
+        cameraRollViewController.assetsFetchResults = smartFetchResultArray[0];
+        [self.navigationController pushViewController:cameraRollViewController animated:NO];
+    }
 }
 
 - (SCImagePickerController *)picker {
@@ -150,7 +157,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     
     if ([assetsFetchResult count] > 0) {
         CGFloat scale = [UIScreen mainScreen].scale;
-        PHAsset *asset = assetsFetchResult[0];
+        PHAsset *asset = assetsFetchResult.lastObject;
         [self.imageManager requestImageForAsset:asset
                                      targetSize:CGSizeMake(self.tableView.rowHeight * scale, self.tableView.rowHeight * scale)
                                     contentMode:PHImageContentModeAspectFill
@@ -167,11 +174,9 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
     SCGridViewController *gridViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
-    gridViewController.title = cell.textLabel.text;
-    gridViewController.assetsFetchResults = [[_collectionsFetchResultsAssets objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    gridViewController.title = (self.collectionsFetchResultsTitles[indexPath.section])[indexPath.row];
+    gridViewController.assetsFetchResults = (self.collectionsFetchResultsAssets[indexPath.section])[indexPath.row];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     [self.navigationController pushViewController:gridViewController animated:YES];
