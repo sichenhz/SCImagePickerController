@@ -12,7 +12,7 @@
 #import "SCBadgeView.h"
 @import Photos;
 
-@interface SCImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface SCImagePickerController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @end
 
@@ -35,20 +35,17 @@
 
 - (void)setupNavigationController {
     
-    UIViewController *rootVC;
-    
     switch (self.sourceType) {
         case SCImagePickerControllerSourceTypePhotoLibrary:
         case SCImagePickerControllerSourceTypeSavedPhotosAlbum:
-            rootVC = [[SCAlbumsViewController alloc] init];
+            _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
             break;
         case SCImagePickerControllerSourceTypeCamera:
-            rootVC = [[SCCameraViewController alloc] init];
+            _navigationController = [[SCCameraViewController alloc] init];
+            _navigationController.delegate = self;
             break;
     }
     
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:rootVC];
-    _navigationController.delegate = self;
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];
@@ -94,6 +91,12 @@
             badgeView.number = self.selectedAssets.count;
         }
     }
+}
+
+#pragma UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    NSLog(@"当前照片信息 -> %@", info);
 }
 
 @end

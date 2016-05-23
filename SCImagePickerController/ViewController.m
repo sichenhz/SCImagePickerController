@@ -29,7 +29,7 @@
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
     
-    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
+    picker.sourceType = SCImagePickerControllerSourceTypeCamera;
     
     picker.allowsMultipleSelection = YES;
     picker.maxMultipleCount = 5;

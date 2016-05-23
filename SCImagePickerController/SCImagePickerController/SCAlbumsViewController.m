@@ -14,7 +14,7 @@
 
 static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReuseIdentifier";
 
-@interface SCAlbumsViewController()
+@interface SCAlbumsViewController() <PHPhotoLibraryChangeObserver>
 
 @property (strong) NSArray *collectionsFetchResults;
 @property (strong) NSArray *collectionsFetchResultsAssets;
@@ -22,6 +22,10 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 @property (nonatomic, weak) SCImagePickerController *picker;
 @property (strong) PHCachingImageManager *imageManager;
 @property (nonatomic, strong) SCBadgeView *badgeView;
+
+// cameraRollAlbum
+@property (nonatomic, copy) NSString *cameraRollTitle;
+@property (nonatomic, strong) PHFetchResult* cameraRollResult;
 
 @end
 
@@ -37,6 +41,8 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+
     self.imageManager = [[PHCachingImageManager alloc] init];
     self.tableView.rowHeight = kAlbumThumbnailSize.height + 0.5;
     
@@ -63,6 +69,23 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     self.collectionsFetchResults = @[smartAlbums, userAlbums];
 
     [self updateFetchResults];
+    
+    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
+        [self pushCameraRollViewController];
+    }
+}
+
+- (void)dealloc {
+    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
+}
+
+- (void)pushCameraRollViewController {
+    if (self.cameraRollTitle && self.cameraRollResult) {
+        SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
+        cameraRollViewController.assetsFetchResults = self.cameraRollResult;
+        cameraRollViewController.title = self.cameraRollTitle;
+        [self.navigationController pushViewController:cameraRollViewController animated:NO];
+    }
 }
 
 - (void)updateFetchResults {
@@ -70,25 +93,24 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     self.collectionsFetchResultsAssets = nil;
     self.collectionsFetchResultsTitles = nil;
     
-    //Fetch PHAssetCollections:
     PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:0];
     PHFetchResult *userAlbums = [self.collectionsFetchResults objectAtIndex:1];
     
-    //Smart albums: Sorted by descending creation date.
+    //Smart albums
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *smartFetchResultLabel = [[NSMutableArray alloc] init];
-    for (PHAssetCollection *collection in smartAlbums)
-    {
+    for (PHAssetCollection *collection in smartAlbums) {
         PHFetchOptions *options = [[PHFetchOptions alloc] init];
         options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         
         PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:collection options:options];
-        if (assetsFetchResult.count > 0)
-        {
+        if (assetsFetchResult.count > 0) {
             if (collection.assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary) {
                 [smartFetchResultArray insertObject:assetsFetchResult atIndex:0];
                 [smartFetchResultLabel insertObject:collection.localizedTitle atIndex:0];
+                self.cameraRollResult = assetsFetchResult;
+                self.cameraRollTitle = collection.localizedTitle;
             } else {
                 [smartFetchResultArray addObject:assetsFetchResult];
                 [smartFetchResultLabel addObject:collection.localizedTitle];
@@ -96,13 +118,11 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
         }
     }
 
-    //User albums:
+    //User albums
     NSMutableArray *userFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *userFetchResultLabel = [[NSMutableArray alloc] init];
-    for (PHCollection *collection in userAlbums)
-    {
-        if ([collection isKindOfClass:[PHAssetCollection class]])
-        {
+    for (PHCollection *collection in userAlbums) {
+        if ([collection isKindOfClass:[PHAssetCollection class]]) {
             PHFetchOptions *options = [[PHFetchOptions alloc] init];
             options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
             PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
@@ -115,13 +135,6 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     
     self.collectionsFetchResultsAssets = @[smartFetchResultArray, userFetchResultArray];
     self.collectionsFetchResultsTitles = @[smartFetchResultLabel, userFetchResultLabel];
-    
-    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum && smartFetchResultArray.count > 0 && smartFetchResultLabel.count > 0) {
-        SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
-        cameraRollViewController.title = smartFetchResultLabel[0];
-        cameraRollViewController.assetsFetchResults = smartFetchResultArray[0];
-        [self.navigationController pushViewController:cameraRollViewController animated:NO];
-    }
 }
 
 - (SCImagePickerController *)picker {
@@ -167,6 +180,8 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
                                           cell.thumbnailView.image = result;
                                       }
                                   }];
+    } else {
+        cell.thumbnailView.image = [UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"emptyFolder.png"]];
     }
     return cell;
 }
@@ -180,6 +195,32 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     [self.navigationController pushViewController:gridViewController animated:YES];
+}
+
+#pragma mark - PHPhotoLibraryChangeObserver
+
+- (void)photoLibraryDidChange:(PHChange *)changeInstance {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        // 更新相册
+        NSMutableArray *updatedCollectionsFetchResults = nil;
+        for (PHFetchResult *collectionsFetchResult in self.collectionsFetchResults) {
+            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
+            if (changeDetails) {
+                if (!updatedCollectionsFetchResults) {
+                    updatedCollectionsFetchResults = [self.collectionsFetchResults mutableCopy];
+                }
+                [updatedCollectionsFetchResults replaceObjectAtIndex:[self.collectionsFetchResults indexOfObject:collectionsFetchResult] withObject:[changeDetails fetchResultAfterChanges]];
+            }
+        }
+        if (updatedCollectionsFetchResults) {
+            self.collectionsFetchResults = updatedCollectionsFetchResults;
+        }
+        
+        // 更新图片
+        [self updateFetchResults];
+        [self.tableView reloadData];        
+    });
 }
 
 @end
