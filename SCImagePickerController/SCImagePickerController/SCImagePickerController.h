@@ -44,6 +44,8 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 
 @protocol SCImagePickerControllerDelegate <NSObject>
 
+@optional
+
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
 - (void)assetsPickerController:(SCImagePickerController *)picker didEditPickingImage:(UIImage *)image;
 
