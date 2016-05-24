@@ -10,6 +10,8 @@
 
 @interface UIImage (Helper)
 
-- (UIImage*)crop:(CGRect)rect scale:(CGFloat)scale;
++ (CGSize)resizeForSend:(CGSize)size;
+
+- (UIImage *)crop:(CGRect)rect scale:(CGFloat)scale;
 
 @end
