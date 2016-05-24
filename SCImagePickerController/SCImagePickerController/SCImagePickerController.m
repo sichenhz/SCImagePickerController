@@ -8,6 +8,7 @@
 
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
+#import "SCImageClipViewController.h"
 #import "SCBadgeView.h"
 @import Photos;
 
@@ -33,12 +34,12 @@
 }
 
 - (void)setupNavigationController {
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
-    [_navigationController willMoveToParentViewController:self];
-    [_navigationController.view setFrame:self.view.frame];
-    [self.view addSubview:_navigationController.view];
-    [self addChildViewController:_navigationController];
-    [_navigationController didMoveToParentViewController:self];
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
+    [self.navigationController willMoveToParentViewController:self];
+    [self.navigationController.view setFrame:self.view.frame];
+    [self.view addSubview:self.navigationController.view];
+    [self addChildViewController:self.navigationController];
+    [self.navigationController didMoveToParentViewController:self];
 }
 
 - (void)selectAsset:(PHAsset *)asset {
@@ -46,7 +47,15 @@
     if (self.allowsMultipleSelection) {
         [self updateDoneButton];
     } else {
-        [self finishPickingAssets:self];
+        if (self.allowsEditing) {
+            CGSize screenSize = [UIScreen mainScreen].bounds.size;
+            SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithPicker:self];
+            controller.asset = asset;
+            controller.clibSize = CGSizeEqualToSize(self.clibSize, CGSizeZero) ? CGSizeMake(screenSize.width, screenSize.width) : self.clibSize;
+            [self.navigationController pushViewController:controller animated:YES];
+        } else {
+            [self finishPickingAssets:self];
+        }
     }
 }
 
@@ -66,6 +75,22 @@
 - (void)finishPickingAssets:(id)sender {
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
+    }
+    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
+        if (self.selectedAssets.count > 0) {
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.resizeMode = PHImageRequestOptionsResizeModeExact;
+            [[PHCachingImageManager defaultManager] requestImageForAsset:self.selectedAssets[0]
+                                                              targetSize:self.clibSize
+                                                             contentMode:PHImageContentModeAspectFill
+                                                                 options:options
+                                                           resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                               BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
+                                                               if (!isDegradedKey) {
+                                                                   [self.delegate assetsPickerController:self didEditPickingImage:result];
+                                                               }
+                                                           }];
+        }
     }
 }
 

@@ -24,7 +24,10 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 
 @property (nonatomic, strong) NSArray *mediaTypes; //PHAssetMediaType
 
-@property (nonatomic) BOOL allowsMultipleSelection; //default is NO
+@property (nonatomic) BOOL allowsEditing; // default value is NO.
+@property (nonatomic) CGSize clibSize;
+
+@property (nonatomic) BOOL allowsMultipleSelection; //default value is NO
 @property (nonatomic) NSInteger maxMultipleCount;
 
 @property (nonatomic, strong) UINavigationController *navigationController;
@@ -42,8 +45,7 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 @protocol SCImagePickerControllerDelegate <NSObject>
 
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
-
-@optional
+- (void)assetsPickerController:(SCImagePickerController *)picker didEditPickingImage:(UIImage *)image;
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
 - (void)assetsPickerVontrollerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;

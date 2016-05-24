@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		253094BE1CF41397007218F8 /* SCImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 253094BD1CF41397007218F8 /* SCImageClipViewController.m */; };
 		25387D301CF2AA74008F559A /* SCBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25387D2F1CF2AA74008F559A /* SCBadgeView.m */; };
 		25FE673A1CEEB5FC0033483B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE67391CEEB5FC0033483B /* main.m */; };
 		25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673C1CEEB5FC0033483B /* AppDelegate.m */; };
@@ -23,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		253094BC1CF41397007218F8 /* SCImageClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImageClipViewController.h; sourceTree = "<group>"; };
+		253094BD1CF41397007218F8 /* SCImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImageClipViewController.m; sourceTree = "<group>"; };
 		25387D2E1CF2AA74008F559A /* SCBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCBadgeView.h; sourceTree = "<group>"; };
 		25387D2F1CF2AA74008F559A /* SCBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCBadgeView.m; sourceTree = "<group>"; };
 		25FE67351CEEB5FC0033483B /* SCImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SCImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,6 +117,8 @@
 				25FE675A1CEEB9A40033483B /* SCGridViewCell.m */,
 				25FE67561CEEB95F0033483B /* SCGridViewController.h */,
 				25FE67571CEEB95F0033483B /* SCGridViewController.m */,
+				253094BC1CF41397007218F8 /* SCImageClipViewController.h */,
+				253094BD1CF41397007218F8 /* SCImageClipViewController.m */,
 				25387D2E1CF2AA74008F559A /* SCBadgeView.h */,
 				25387D2F1CF2AA74008F559A /* SCBadgeView.m */,
 			);
@@ -195,6 +200,7 @@
 				25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */,
 				25FE675E1CEEB9C70033483B /* SCAlbumsViewCell.m in Sources */,
 				25FE673A1CEEB5FC0033483B /* main.m in Sources */,
+				253094BE1CF41397007218F8 /* SCImageClipViewController.m in Sources */,
 				25FE67551CEEB6AC0033483B /* SCAlbumsViewController.m in Sources */,
 				25FE67581CEEB95F0033483B /* SCGridViewController.m in Sources */,
 				25FE67521CEEB6670033483B /* SCImagePickerController.m in Sources */,
@@ -314,6 +320,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meilishuo.SCImagePickerController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -325,6 +332,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meilishuo.SCImagePickerController;
 				PRODUCT_NAME = "$(TARGET_NAME)";

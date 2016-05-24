@@ -31,8 +31,11 @@
     
     picker.sourceType = SCImagePickerControllerSourceTypePhotoLibrary;
     
-    picker.allowsMultipleSelection = YES;
-    picker.maxMultipleCount = 5;
+    picker.allowsEditing = YES;
+    picker.clibSize = CGSizeMake(750, 750);
+    
+//    picker.allowsMultipleSelection = YES;
+//    picker.maxMultipleCount = 5;
     
     [self presentViewController:picker animated:YES completion:nil];
 }
@@ -42,6 +45,11 @@
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"当前选择图片 -> %@", assets);
+}
+
+- (void)assetsPickerController:(SCImagePickerController *)picker didEditPickingImage:(UIImage *)image {
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"当前编辑图片 -> %@", image);
 }
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker {
