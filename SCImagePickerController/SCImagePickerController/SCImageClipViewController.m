@@ -35,7 +35,6 @@
     
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.clibRect.origin.x, self.clibRect.origin.y, self.clibRect.size.width, self.clibRect.size.height)];
-    self.scrollView.maximumZoomScale = 5;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -55,15 +54,18 @@
                                                        BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
                                                        if (!isDegradedKey) {
                                                            self.imageView.image = result;
-                                                           self.imageView.frame = [self centerRectWithSize:result.size containerSize:self.scrollView.frame.size];
-                                                           if (self.imageView.frame.size.width < self.clibRect.size.width) {
-                                                               self.scrollView.minimumZoomScale = self.clibRect.size.width / self.imageView.frame.size.width;
-                                                           } else if (self.imageView.frame.size.height < self.clibSize.height) {
-                                                               self.scrollView.minimumZoomScale = self.clibRect.size.height / self.imageView.frame.size.height;
+                                                           [self.imageView sizeToFit];
+                                                           CGFloat scaleWidth = self.clibRect.size.width / self.imageView.frame.size.width;
+                                                           CGFloat scaleHeight = self.clibRect.size.height / self.imageView.frame.size.height;
+                                                           if (self.imageView.frame.size.width <= self.clibRect.size.width ||
+                                                               self.imageView.frame.size.height <= self.clibRect.size.height) {
+                                                               self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                               self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
                                                            } else {
-                                                               self.scrollView.minimumZoomScale = 1;
+                                                               self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                               self.scrollView.maximumZoomScale = 1;
                                                            }
-                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
+                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;                                                           
                                                        }
                                                    }];
     
@@ -120,12 +122,11 @@
 - (void)selectButtonPressed:(id)sender {
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
         if (self.picker.selectedAssets.count > 0) {
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-            options.resizeMode = PHImageRequestOptionsResizeModeFast;
-            [[PHCachingImageManager defaultManager] requestImageForAsset:self.picker.selectedAssets[0]
-                                                              targetSize:self.picker.clibSize
+            PHAsset *asset = self.picker.selectedAssets.lastObject;
+            [[PHCachingImageManager defaultManager] requestImageForAsset:asset
+                                                              targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
                                                              contentMode:PHImageContentModeAspectFill
-                                                                 options:options
+                                                                 options:nil
                                                            resultHandler:^(UIImage *result, NSDictionary *info) {
                                                                BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
                                                                if (!isDegradedKey) {

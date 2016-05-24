@@ -51,7 +51,7 @@
     CGPoint origin = CGPointMake(-rect.origin.x, -rect.origin.y);
     UIImage *image = nil;
     UIGraphicsBeginImageContext(CGSizeMake(rect.size.width, rect.size.height));
-    [self drawInRect:CGRectMake(origin.x, origin.y, self.size.width, self.size.height)];
+    [self drawInRect:CGRectMake(origin.x, origin.y, self.size.width * scale, self.size.height * scale)];
     image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;
