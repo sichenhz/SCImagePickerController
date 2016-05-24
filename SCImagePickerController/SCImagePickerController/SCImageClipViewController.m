@@ -7,7 +7,7 @@
 //
 
 #import "SCImageClipViewController.h"
-#import "UIImage+Helper.h"
+#import "UIImage+SCHelper.h"
 
 @interface SCImageClipViewController() <UIScrollViewDelegate>
 

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		253094BE1CF41397007218F8 /* SCImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 253094BD1CF41397007218F8 /* SCImageClipViewController.m */; };
-		253094C11CF45A87007218F8 /* UIImage+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 253094C01CF45A87007218F8 /* UIImage+Helper.m */; };
+		253094C11CF45A87007218F8 /* UIImage+SCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 253094C01CF45A87007218F8 /* UIImage+SCHelper.m */; };
 		25387D301CF2AA74008F559A /* SCBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25387D2F1CF2AA74008F559A /* SCBadgeView.m */; };
 		25FE673A1CEEB5FC0033483B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE67391CEEB5FC0033483B /* main.m */; };
 		25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673C1CEEB5FC0033483B /* AppDelegate.m */; };
@@ -27,8 +27,8 @@
 /* Begin PBXFileReference section */
 		253094BC1CF41397007218F8 /* SCImageClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImageClipViewController.h; sourceTree = "<group>"; };
 		253094BD1CF41397007218F8 /* SCImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImageClipViewController.m; sourceTree = "<group>"; };
-		253094BF1CF45A87007218F8 /* UIImage+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Helper.h"; sourceTree = "<group>"; };
-		253094C01CF45A87007218F8 /* UIImage+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Helper.m"; sourceTree = "<group>"; };
+		253094BF1CF45A87007218F8 /* UIImage+SCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SCHelper.h"; sourceTree = "<group>"; };
+		253094C01CF45A87007218F8 /* UIImage+SCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SCHelper.m"; sourceTree = "<group>"; };
 		25387D2E1CF2AA74008F559A /* SCBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCBadgeView.h; sourceTree = "<group>"; };
 		25387D2F1CF2AA74008F559A /* SCBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCBadgeView.m; sourceTree = "<group>"; };
 		25FE67351CEEB5FC0033483B /* SCImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SCImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -124,8 +124,8 @@
 				253094BD1CF41397007218F8 /* SCImageClipViewController.m */,
 				25387D2E1CF2AA74008F559A /* SCBadgeView.h */,
 				25387D2F1CF2AA74008F559A /* SCBadgeView.m */,
-				253094BF1CF45A87007218F8 /* UIImage+Helper.h */,
-				253094C01CF45A87007218F8 /* UIImage+Helper.m */,
+				253094BF1CF45A87007218F8 /* UIImage+SCHelper.h */,
+				253094C01CF45A87007218F8 /* UIImage+SCHelper.m */,
 			);
 			path = SCImagePickerController;
 			sourceTree = "<group>";
@@ -207,7 +207,7 @@
 				25FE673A1CEEB5FC0033483B /* main.m in Sources */,
 				253094BE1CF41397007218F8 /* SCImageClipViewController.m in Sources */,
 				25FE67551CEEB6AC0033483B /* SCAlbumsViewController.m in Sources */,
-				253094C11CF45A87007218F8 /* UIImage+Helper.m in Sources */,
+				253094C11CF45A87007218F8 /* UIImage+SCHelper.m in Sources */,
 				25FE67581CEEB95F0033483B /* SCGridViewController.m in Sources */,
 				25FE67521CEEB6670033483B /* SCImagePickerController.m in Sources */,
 				25387D301CF2AA74008F559A /* SCBadgeView.m in Sources */,

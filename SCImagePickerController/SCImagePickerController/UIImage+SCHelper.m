@@ -1,14 +1,14 @@
 //
-//  UIImage+Helper.m
+//  UIImage+SCHelper.m
 //  SCImagePickerController
 //
 //  Created by sichenwang on 16/5/24.
 //  Copyright © 2016年 sichenwang. All rights reserved.
 //
 
-#import "UIImage+Helper.h"
+#import "UIImage+SCHelper.h"
 
-@implementation UIImage (Helper)
+@implementation UIImage (SCHelper)
 
 + (CGSize)resizeForSend:(CGSize)size {
     

@@ -1,5 +1,5 @@
 //
-//  UIImage+Helper.h
+//  UIImage+SCHelper.h
 //  SCImagePickerController
 //
 //  Created by sichenwang on 16/5/24.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIImage (Helper)
+@interface UIImage (SCHelper)
 
 + (CGSize)resizeForSend:(CGSize)size;
 
