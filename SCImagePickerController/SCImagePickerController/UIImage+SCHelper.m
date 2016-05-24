@@ -12,7 +12,7 @@
 
 + (CGSize)resizeForSend:(CGSize)size {
     
-    CGSize targetSize = CGSizeZero;
+    CGSize targetSize = size;
     
     CGFloat regularLength = 1280;
     CGFloat regularFactor = 2;
@@ -41,9 +41,9 @@
         else {
             targetSize = CGSizeMake(regularLength * size.width / size.height, regularLength);
         }
-        NSLog(@"处理前size -> %@", NSStringFromCGSize(size));
-        NSLog(@"处理后size -> %@", NSStringFromCGSize(targetSize));
     }
+    NSLog(@"处理前size -> %@", NSStringFromCGSize(size));
+    NSLog(@"处理后size -> %@", NSStringFromCGSize(targetSize));
     return targetSize;
 }
 
