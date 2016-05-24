@@ -8,7 +8,6 @@
 
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
-#import "SCCameraViewController.h"
 #import "SCBadgeView.h"
 @import Photos;
 
@@ -34,18 +33,7 @@
 }
 
 - (void)setupNavigationController {
-    
-    switch (self.sourceType) {
-        case SCImagePickerControllerSourceTypePhotoLibrary:
-        case SCImagePickerControllerSourceTypeSavedPhotosAlbum:
-            _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
-            break;
-        case SCImagePickerControllerSourceTypeCamera:
-            _navigationController = [[SCCameraViewController alloc] init];
-            _navigationController.delegate = self;
-            break;
-    }
-    
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
     [_navigationController willMoveToParentViewController:self];
     [_navigationController.view setFrame:self.view.frame];
     [self.view addSubview:_navigationController.view];

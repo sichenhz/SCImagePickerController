@@ -88,6 +88,7 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     [super viewDidLoad];
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.contentInset = UIEdgeInsetsMake(0, 0, 1, 0);
 
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];

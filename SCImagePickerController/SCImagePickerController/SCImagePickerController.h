@@ -13,7 +13,6 @@
 
 typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
     SCImagePickerControllerSourceTypePhotoLibrary,
-    SCImagePickerControllerSourceTypeCamera,
     SCImagePickerControllerSourceTypeSavedPhotosAlbum
 };
 
