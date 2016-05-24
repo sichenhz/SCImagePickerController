@@ -11,6 +11,8 @@
 
 @interface ViewController ()<SCImagePickerControllerDelegate>
 
+@property (nonatomic, strong) UIImageView *imageView;
+
 @end
 
 @implementation ViewController
@@ -18,6 +20,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 100, 200, 200)];
+    [self.view addSubview:self.imageView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,6 +55,7 @@
 - (void)assetsPickerController:(SCImagePickerController *)picker didEditPickingImage:(UIImage *)image {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"当前编辑图片 -> %@", image);
+    self.imageView.image = image;
 }
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker {

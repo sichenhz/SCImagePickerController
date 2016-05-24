@@ -7,6 +7,7 @@
 //
 
 #import "SCImageClipViewController.h"
+#import "UIImage+Helper.h"
 
 @interface SCImageClipViewController() <UIScrollViewDelegate>
 
@@ -55,6 +56,14 @@
                                                        if (!isDegradedKey) {
                                                            self.imageView.image = result;
                                                            self.imageView.frame = [self centerRectWithSize:result.size containerSize:self.scrollView.frame.size];
+                                                           if (self.imageView.frame.size.width < self.clibRect.size.width) {
+                                                               self.scrollView.minimumZoomScale = self.clibRect.size.width / self.imageView.frame.size.width;
+                                                           } else if (self.imageView.frame.size.height < self.clibSize.height) {
+                                                               self.scrollView.minimumZoomScale = self.clibRect.size.height / self.imageView.frame.size.height;
+                                                           } else {
+                                                               self.scrollView.minimumZoomScale = 1;
+                                                           }
+                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
                                                        }
                                                    }];
     
@@ -109,10 +118,36 @@
 }
 
 - (void)selectButtonPressed:(id)sender {
-    [self.picker finishPickingAssets:sender];
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
+        if (self.picker.selectedAssets.count > 0) {
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.resizeMode = PHImageRequestOptionsResizeModeFast;
+            [[PHCachingImageManager defaultManager] requestImageForAsset:self.picker.selectedAssets[0]
+                                                              targetSize:self.picker.clibSize
+                                                             contentMode:PHImageContentModeAspectFill
+                                                                 options:options
+                                                           resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                               BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
+                                                               if (!isDegradedKey) {
+                                                                   [self.picker.delegate assetsPickerController:self.picker didEditPickingImage:[self clibImage:result]];
+                                                               }
+                                                           }];
+        }
+    }
 }
 
 #pragma mark - Private Method
+
+- (UIImage *)clibImage:(UIImage *)image {
+    CGFloat scale  = self.scrollView.zoomScale;
+    CGPoint offset = self.scrollView.contentOffset;
+    CGFloat orignalScale = scale * [[UIScreen mainScreen] scale];
+    CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale],
+                                        offset.y * [[UIScreen mainScreen] scale]);
+    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.clibSize.width, self.clibSize.height);
+    UIImage *resultImage = [image crop:cropRect scale:orignalScale];
+    return resultImage;
+}
 
 - (CGSize)ratioSize:(CGSize)originSize ratio:(CGFloat)ratio {
     return CGSizeMake(originSize.width / ratio, originSize.height / ratio);

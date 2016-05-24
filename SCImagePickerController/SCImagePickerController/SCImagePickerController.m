@@ -76,22 +76,6 @@
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
     }
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
-        if (self.selectedAssets.count > 0) {
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-            options.resizeMode = PHImageRequestOptionsResizeModeExact;
-            [[PHCachingImageManager defaultManager] requestImageForAsset:self.selectedAssets[0]
-                                                              targetSize:self.clibSize
-                                                             contentMode:PHImageContentModeAspectFill
-                                                                 options:options
-                                                           resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                               BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
-                                                               if (!isDegradedKey) {
-                                                                   [self.delegate assetsPickerController:self didEditPickingImage:result];
-                                                               }
-                                                           }];
-        }
-    }
 }
 
 - (void)updateDoneButton {
