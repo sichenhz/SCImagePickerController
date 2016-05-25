@@ -14,7 +14,6 @@
 @property (nonatomic, weak) SCImagePickerController *picker;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic) CGRect clibRect;
 
 @end
 
@@ -34,7 +33,11 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(self.clibRect.origin.x, self.clibRect.origin.y, self.clibRect.size.width, self.clibRect.size.height)];
+    if (CGSizeEqualToSize(self.picker.clibSize, CGSizeZero)) {
+        self.picker.clibSize = CGSizeMake(screenSize.width, screenSize.width);
+    }
+
+    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.picker.clibSize containerSize:[UIScreen mainScreen].bounds.size]];
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -46,35 +49,34 @@
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self.scrollView addSubview:self.imageView];
-    [[PHCachingImageManager defaultManager] requestImageForAsset:self.asset
-                                                      targetSize:self.clibSize
-                                                     contentMode:PHImageContentModeAspectFill
+    PHAsset *asset = self.picker.selectedAssets.firstObject;
+    [[PHCachingImageManager defaultManager] requestImageForAsset:asset
+                                                      targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                                                     contentMode:PHImageContentModeDefault
                                                          options:nil
                                                    resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                       BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
-                                                       if (!isDegradedKey) {
-                                                           self.imageView.image = result;
-                                                           [self.imageView sizeToFit];
-                                                           CGFloat scaleWidth = self.clibRect.size.width / self.imageView.frame.size.width;
-                                                           CGFloat scaleHeight = self.clibRect.size.height / self.imageView.frame.size.height;
-                                                           if (self.imageView.frame.size.width <= self.clibRect.size.width ||
-                                                               self.imageView.frame.size.height <= self.clibRect.size.height) {
-                                                               self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                               self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                           } else {
-                                                               self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                               self.scrollView.maximumZoomScale = 1;
-                                                           }
-                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;                                                           
+                                                       // 这里会调多次，需重置transform得出正确的frame
+                                                       self.imageView.transform = CGAffineTransformIdentity;
+                                                       self.imageView.image = result;
+                                                       [self.imageView sizeToFit];
+                                                       CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
+                                                       CGFloat scaleHeight = self.scrollView.frame.size.height / self.imageView.frame.size.height;
+                                                       if (self.imageView.frame.size.width <= self.scrollView.frame.size.width ||
+                                                           self.imageView.frame.size.height <= self.scrollView.frame.size.height) {
+                                                           self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                       } else {
+                                                           self.scrollView.maximumZoomScale = 1;
                                                        }
+                                                       self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                       self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
                                                    }];
     
     // mask
     UIImageView *mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"photo_rule.png"]]];
     mask.frame = self.scrollView.frame;
     [self.view addSubview:mask];
-    UIView *topMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, self.clibRect.origin.y)];
-    UIView *bottomMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.clibRect), screenSize.width, topMaskView.frame.size.height)];
+    UIView *topMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, self.scrollView.frame.origin.y)];
+    UIView *bottomMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.scrollView.frame), screenSize.width, topMaskView.frame.size.height)];
     topMaskView.backgroundColor = [UIColor blackColor];
     bottomMaskView.backgroundColor = [UIColor blackColor];
     topMaskView.alpha = 0.7;
@@ -108,32 +110,16 @@
     [self.navigationController setNavigationBarHidden:NO animated:YES];    
 }
 
-- (void)setClibSize:(CGSize)clibSize {
-    _clibSize = clibSize;
-    _clibRect = [self centerRectWithSize:clibSize containerSize:[UIScreen mainScreen].bounds.size];
-}
-
 #pragma mark - Action
 
 - (void)cancelButtonPressed:(id)sender {
+    [self.picker.selectedAssets removeObjectAtIndex:0];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)selectButtonPressed:(id)sender {
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
-        if (self.picker.selectedAssets.count > 0) {
-            PHAsset *asset = self.picker.selectedAssets.lastObject;
-            [[PHCachingImageManager defaultManager] requestImageForAsset:asset
-                                                              targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
-                                                             contentMode:PHImageContentModeAspectFill
-                                                                 options:nil
-                                                           resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                               BOOL isDegradedKey = [info[PHImageResultIsDegradedKey] integerValue];
-                                                               if (!isDegradedKey) {
-                                                                   [self.picker.delegate assetsPickerController:self.picker didEditPickingImage:[self clibImage:result]];
-                                                               }
-                                                           }];
-        }
+        [self.picker.delegate assetsPickerController:self.picker didEditPickingImage:[self clibImage:self.imageView.image]];
     }
 }
 
@@ -145,29 +131,29 @@
     CGFloat orignalScale = scale * [[UIScreen mainScreen] scale];
     CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale],
                                         offset.y * [[UIScreen mainScreen] scale]);
-    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.clibSize.width, self.clibSize.height);
+    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.picker.clibSize.width, self.picker.clibSize.height);
     UIImage *resultImage = [image crop:cropRect scale:orignalScale];
     return resultImage;
 }
 
-- (CGSize)ratioSize:(CGSize)originSize ratio:(CGFloat)ratio {
-    return CGSizeMake(originSize.width / ratio, originSize.height / ratio);
-}
-
-- (CGRect)centerRectWithSize:(CGSize)imageSize containerSize:(CGSize)containerSize {
-    CGFloat heightRatio = imageSize.height / containerSize.height;
-    CGFloat widthRatio = imageSize.width / containerSize.width;
+- (CGRect)centerFitRectWithContentSize:(CGSize)contentSize containerSize:(CGSize)containerSize {
+    CGFloat heightRatio = contentSize.height / containerSize.height;
+    CGFloat widthRatio = contentSize.width / containerSize.width;
     CGSize size = CGSizeZero;
     if (heightRatio > 1 && widthRatio <= 1) {
-        size = [self ratioSize:imageSize ratio:heightRatio];
+        size = [self ratioSize:contentSize ratio:heightRatio];
+    } else if (heightRatio <= 1 && widthRatio > 1) {
+        size = [self ratioSize:contentSize ratio:widthRatio];
+    } else {
+        size = [self ratioSize:contentSize ratio:MAX(heightRatio, widthRatio)];
     }
-    if (heightRatio <= 1 && widthRatio > 1) {
-        size = [self ratioSize:imageSize ratio:widthRatio];
-    }
-    size = [self ratioSize:imageSize ratio:MAX(heightRatio, widthRatio)];
     CGFloat x = (containerSize.width - size.width) / 2;
     CGFloat y = (containerSize.height - size.height) / 2;
     return CGRectMake(x, y, size.width, size.height);
+}
+
+- (CGSize)ratioSize:(CGSize)originSize ratio:(CGFloat)ratio {
+    return CGSizeMake(originSize.width / ratio, originSize.height / ratio);
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -183,7 +169,6 @@
     (scrollView.bounds.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
     CGPoint actualCenter = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX,
                                        scrollView.contentSize.height * 0.5 + offsetY);
-    
     self.imageView.center = actualCenter;
 }
 

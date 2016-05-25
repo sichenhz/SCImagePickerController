@@ -10,15 +10,8 @@
 @import UIKit;
 @import Photos;
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface SCImageClipViewController : UIViewController
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker;
 
-@property (nonatomic, strong, nonnull) PHAsset *asset;
-@property (nonatomic) CGSize clibSize;
-
 @end
-
-NS_ASSUME_NONNULL_END

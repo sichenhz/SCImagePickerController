@@ -48,10 +48,7 @@
         [self updateDoneButton];
     } else {
         if (self.allowsEditing) {
-            CGSize screenSize = [UIScreen mainScreen].bounds.size;
             SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithPicker:self];
-            controller.asset = asset;
-            controller.clibSize = CGSizeEqualToSize(self.clibSize, CGSizeZero) ? CGSizeMake(screenSize.width, screenSize.width) : self.clibSize;
             [self.navigationController pushViewController:controller animated:YES];
         } else {
             [self finishPickingAssets:self];
