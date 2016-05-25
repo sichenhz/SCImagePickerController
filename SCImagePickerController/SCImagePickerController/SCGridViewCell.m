@@ -10,18 +10,23 @@
 
 @implementation SCGridViewCell
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.thumbnailView.image = nil;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
         CGFloat cellSize = self.contentView.bounds.size.width;
         
-        _imageView = [UIImageView new];
-        _imageView.frame = CGRectMake(0, 0, cellSize, cellSize);
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _imageView.clipsToBounds = YES;
-        _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [self.contentView addSubview:_imageView];
+        _thumbnailView = [UIImageView new];
+        _thumbnailView.frame = CGRectMake(0, 0, cellSize, cellSize);
+        _thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
+        _thumbnailView.clipsToBounds = YES;
+        _thumbnailView.translatesAutoresizingMaskIntoConstraints = NO;
+        _thumbnailView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        [self.contentView addSubview:_thumbnailView];
         
         // Selection overlay & icon
         _coverView = [[UIView alloc] initWithFrame:self.bounds];

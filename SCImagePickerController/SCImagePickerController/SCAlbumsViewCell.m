@@ -11,7 +11,12 @@
 
 @implementation SCAlbumsViewCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.thumbnailView.image = nil;
+}
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         

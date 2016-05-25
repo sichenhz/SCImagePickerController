@@ -33,11 +33,11 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    if (CGSizeEqualToSize(self.picker.clibSize, CGSizeZero)) {
-        self.picker.clibSize = CGSizeMake(screenSize.width, screenSize.width);
+    if (CGSizeEqualToSize(self.picker.cropSize, CGSizeZero)) {
+        self.picker.cropSize = CGSizeMake(screenSize.width, screenSize.width);
     }
 
-    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.picker.clibSize containerSize:[UIScreen mainScreen].bounds.size]];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.picker.cropSize containerSize:[UIScreen mainScreen].bounds.size]];
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -118,8 +118,8 @@
 }
 
 - (void)selectButtonPressed:(id)sender {
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didEditPickingImage:)]) {
-        [self.picker.delegate assetsPickerController:self.picker didEditPickingImage:[self clibImage:self.imageView.image]];
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
+        [self.picker.delegate assetsPickerController:self.picker didFinishPickingImage:[self clibImage:self.imageView.image]];
     }
 }
 
@@ -131,7 +131,7 @@
     CGFloat orignalScale = scale * [[UIScreen mainScreen] scale];
     CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale],
                                         offset.y * [[UIScreen mainScreen] scale]);
-    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.picker.clibSize.width, self.picker.clibSize.height);
+    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.picker.cropSize.width, self.picker.cropSize.height);
     UIImage *resultImage = [image crop:cropRect scale:orignalScale];
     return resultImage;
 }

@@ -7,13 +7,11 @@
 //
 
 @import UIKit;
-@import Photos;
 
 @interface SCGridViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) PHAsset *asset;
-
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong, readonly) UIImageView *thumbnailView;
+@property (nonatomic, copy) NSString *representedAssetIdentifier;
 
 //Selection overlay
 @property (nonatomic) BOOL shouldShowSelection;

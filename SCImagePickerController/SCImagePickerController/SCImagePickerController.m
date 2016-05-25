@@ -12,17 +12,12 @@
 #import "SCBadgeView.h"
 @import Photos;
 
-@interface SCImagePickerController() <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-
-@end
-
 @implementation SCImagePickerController
 
 - (instancetype)init {
     if (self = [super init]) {
         _selectedAssets = [[NSMutableArray alloc] init];
         _mediaTypes = @[@(PHAssetMediaTypeImage)];
-
     }
     return self;
 }
@@ -61,18 +56,18 @@
     [self updateDoneButton];
 }
 
+- (void)finishPickingAssets:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
+        [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
+    }
+}
+
 - (void)dismiss:(id)sender {
     if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
         [self.delegate assetsPickerControllerDidCancel:self];
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)finishPickingAssets:(id)sender {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
-        [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
-    }
 }
 
 - (void)updateDoneButton {
@@ -85,12 +80,6 @@
             badgeView.number = self.selectedAssets.count;
         }
     }
-}
-
-#pragma UIImagePickerControllerDelegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    NSLog(@"当前照片信息 -> %@", info);
 }
 
 @end

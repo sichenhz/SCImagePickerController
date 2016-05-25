@@ -7,11 +7,11 @@
 //
 
 #import "SCImagePickerController.h"
-@import UIKit;
-@import Photos;
 
 @interface SCImageClipViewController : UIViewController
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker;
+
+@property (nonatomic, strong) UIImage *image;
 
 @end

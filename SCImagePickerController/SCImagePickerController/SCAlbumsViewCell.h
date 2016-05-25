@@ -11,9 +11,7 @@
 
 @interface SCAlbumsViewCell : UITableViewCell
 
-@property (strong) PHFetchResult *assetsFetchResults;
-@property (strong) PHAssetCollection *assetCollection;
-
 @property (nonatomic, strong) UIImageView *thumbnailView;
+@property (nonatomic, copy) NSString *representedAlbumIdentifier;
 
 @end

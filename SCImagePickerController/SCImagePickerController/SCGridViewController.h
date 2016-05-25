@@ -12,7 +12,7 @@
 
 @interface SCGridViewController : UICollectionViewController
 
-@property (strong) PHFetchResult *assetsFetchResults;
+@property (nonatomic, strong) PHFetchResult *assets;
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker;
 
