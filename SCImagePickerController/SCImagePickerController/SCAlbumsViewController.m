@@ -120,6 +120,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (PHFetchResult *)assetsInAssetCollection:(PHAssetCollection *)collection {
     PHFetchOptions *options = [[PHFetchOptions alloc] init];
     options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     return [PHAsset fetchAssetsInAssetCollection:(PHAssetCollection *)collection options:options];
 }
 
@@ -177,7 +178,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 
     // Request an image for the collection from the PHCachingImageManager.
     CGFloat scale = [UIScreen mainScreen].scale;
-    PHAsset *asset = assets.lastObject;
+    PHAsset *asset = assets.firstObject;
     [self.imageManager requestImageForAsset:asset
                                  targetSize:CGSizeMake(self.tableView.rowHeight * scale, self.tableView.rowHeight * scale)
                                 contentMode:PHImageContentModeAspectFill

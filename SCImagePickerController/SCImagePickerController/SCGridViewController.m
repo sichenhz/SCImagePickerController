@@ -174,12 +174,6 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger lastRow = self.assets.count - 1;
-        if (lastRow > 0) {
-            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:lastRow inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-        }
-    });
     return self.assets.count;
 }
 
