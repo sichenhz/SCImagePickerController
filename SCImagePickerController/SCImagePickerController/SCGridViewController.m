@@ -93,7 +93,7 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView.contentInset = UIEdgeInsetsMake(0, 0, 1, 0);
+    self.collectionView.contentInset = UIEdgeInsetsMake(1, 0, 1, 0);
 
     if (self.picker.allowsMultipleSelection) {
         UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
@@ -196,7 +196,7 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
                                   }
                               }];
     
-    cell.shouldShowSelection = self.picker.allowsMultipleSelection;
+    cell.allowsSelection = self.picker.allowsMultipleSelection;
     if ([self.picker.selectedAssets containsObject:asset]) {
         cell.selected = YES;
         [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];

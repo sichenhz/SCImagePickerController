@@ -18,6 +18,13 @@
     if (self = [super init]) {
         _selectedAssets = [[NSMutableArray alloc] init];
         _mediaTypes = @[@(PHAssetMediaTypeImage)];
+        _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
+        _navigationController.navigationBar.barTintColor = [UIColor colorWithRed:71/255.0f green:71/255.0f blue:89/255.0f alpha:1.0f];
+        _navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        _navigationController.navigationBar.titleTextAttributes = @{
+                                                                    NSForegroundColorAttributeName  :   [UIColor whiteColor],
+                                                                    NSFontAttributeName             :   [UIFont systemFontOfSize:18]
+                                                                    };
     }
     return self;
 }
@@ -25,11 +32,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setupNavigationController];
-}
-
-- (void)setupNavigationController {
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
     [self.navigationController willMoveToParentViewController:self];
     [self.navigationController.view setFrame:self.view.frame];
     [self.view addSubview:self.navigationController.view];

@@ -7,7 +7,6 @@
 //
 
 #import "SCAlbumsViewCell.h"
-#import "SCAlbumsViewController.h"
 
 @implementation SCAlbumsViewCell
 

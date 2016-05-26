@@ -8,6 +8,13 @@
 
 #import "SCGridViewCell.h"
 
+@interface SCGridViewCell()
+
+@property (nonatomic, weak) UIView *selectedCoverView;
+@property (nonatomic, weak) UIButton *selectionButton;
+
+@end
+
 @implementation SCGridViewCell
 
 - (void)prepareForReuse {
@@ -28,38 +35,53 @@
         _thumbnailView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:_thumbnailView];
         
-        // Selection overlay & icon
-        _coverView = [[UIView alloc] initWithFrame:self.bounds];
-        _coverView.translatesAutoresizingMaskIntoConstraints = NO;
-        _coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        _coverView.backgroundColor = [UIColor colorWithRed:0.24 green:0.47 blue:0.85 alpha:0.6];
-        [self.contentView addSubview:_coverView];
-        _coverView.hidden = YES;
-        
-        _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _selectedButton.frame = CGRectMake(2*self.bounds.size.width/3, 0*self.bounds.size.width/3, self.bounds.size.width/3, self.bounds.size.width/3);
-        _selectedButton.contentMode = UIViewContentModeTopRight;
-        _selectedButton.adjustsImageWhenHighlighted = NO;
-        [_selectedButton setImage:nil forState:UIControlStateNormal];
-        _selectedButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _selectedButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [_selectedButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickH.png"]] forState:UIControlStateSelected];
-        _selectedButton.hidden = NO;
-        _selectedButton.userInteractionEnabled = NO;
-        [self.contentView addSubview:_selectedButton];
     }
     return self;
+}
+
+- (void)setAllowsSelection:(BOOL)allowsSelection {
+    if (_allowsSelection != allowsSelection) {
+        _allowsSelection = allowsSelection;
+        
+        if (_allowsSelection) {
+            
+            UIView *selectedCoverView = [[UIView alloc] initWithFrame:self.bounds];
+            selectedCoverView.translatesAutoresizingMaskIntoConstraints = NO;
+            selectedCoverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+            selectedCoverView.backgroundColor = [UIColor colorWithRed:0.24 green:0.47 blue:0.85 alpha:0.6];
+            selectedCoverView.hidden = YES;
+            [self.contentView addSubview:selectedCoverView];
+            _selectedCoverView = selectedCoverView;
+            
+            UIButton *selectionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            selectionButton.frame = CGRectMake(2*self.bounds.size.width/3, 0*self.bounds.size.width/3, self.bounds.size.width/3, self.bounds.size.width/3);
+            selectionButton.contentMode = UIViewContentModeTopRight;
+            selectionButton.adjustsImageWhenHighlighted = NO;
+            [selectionButton setImage:nil forState:UIControlStateNormal];
+            selectionButton.translatesAutoresizingMaskIntoConstraints = NO;
+            selectionButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+            [selectionButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickw.png"]] forState:UIControlStateNormal];
+            [selectionButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickH.png"]] forState:UIControlStateSelected];
+            selectionButton.hidden = NO;
+            selectionButton.userInteractionEnabled = NO;
+            [self.contentView addSubview:selectionButton];
+            _selectionButton = selectionButton;
+            
+        } else {
+            
+            [_selectedCoverView removeFromSuperview];
+            [_selectionButton removeFromSuperview];
+        }
+    }
 }
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
 
-    if (!self.shouldShowSelection) {
-        return;
+    if (self.allowsSelection) {
+        _selectedCoverView.hidden = !selected;
+        _selectionButton.selected = selected;
     }
-    
-    _coverView.hidden = !selected;
-    _selectedButton.selected = selected;
 }
 
 @end

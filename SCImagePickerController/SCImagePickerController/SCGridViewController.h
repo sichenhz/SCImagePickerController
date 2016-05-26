@@ -7,8 +7,6 @@
 //
 
 #import "SCImagePickerController.h"
-@import UIKit;
-@import Photos;
 
 @interface SCGridViewController : UICollectionViewController
 

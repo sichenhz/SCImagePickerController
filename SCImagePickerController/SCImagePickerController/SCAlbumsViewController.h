@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-static CGSize const kAlbumThumbnailSize = {57.0, 57.0};
-
 @interface SCAlbumsViewController : UITableViewController
 
 @end

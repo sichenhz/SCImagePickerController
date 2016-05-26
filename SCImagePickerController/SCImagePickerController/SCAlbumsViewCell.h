@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
-@import Photos;
+
+static CGSize const kAlbumThumbnailSize = {57.0, 57.0};
 
 @interface SCAlbumsViewCell : UITableViewCell
 
