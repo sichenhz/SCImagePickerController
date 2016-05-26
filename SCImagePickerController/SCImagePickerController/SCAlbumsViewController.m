@@ -80,7 +80,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
         PHAssetCollection *collection = collections[0];
         
         SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
-        cameraRollViewController.assets = [PHAsset fetchAssetsInAssetCollection:collection options:nil];
+        cameraRollViewController.assets = [self assetsInAssetCollection:collection];
         cameraRollViewController.title = collection.localizedTitle;
         
         [self.navigationController pushViewController:cameraRollViewController animated:NO];
