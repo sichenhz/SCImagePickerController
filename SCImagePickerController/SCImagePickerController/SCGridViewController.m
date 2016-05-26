@@ -205,7 +205,7 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     cell.shouldShowSelection = self.picker.allowsMultipleSelection;
     if ([self.picker.selectedAssets containsObject:asset]) {
         cell.selected = YES;
-        [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionTop];
+        [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
     } else {
         cell.selected = NO;
     }
