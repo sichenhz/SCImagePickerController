@@ -128,7 +128,7 @@
 - (UIImage *)clibImage:(UIImage *)image {
     CGFloat scale  = self.scrollView.zoomScale;
     CGPoint offset = self.scrollView.contentOffset;
-    CGFloat orignalScale = scale * [[UIScreen mainScreen] scale];
+    CGFloat orignalScale = scale * [[UIScreen mainScreen] scale] * self.picker.cropSize.width / (self.scrollView.frame.size.width * [[UIScreen mainScreen] scale]);
     CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale],
                                         offset.y * [[UIScreen mainScreen] scale]);
     CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.picker.cropSize.width, self.picker.cropSize.height);
