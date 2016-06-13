@@ -55,20 +55,22 @@
                                                      contentMode:PHImageContentModeDefault
                                                          options:nil
                                                    resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                       // 这里会调多次，需重置transform得出正确的frame
-                                                       self.imageView.transform = CGAffineTransformIdentity;
-                                                       self.imageView.image = result;
-                                                       [self.imageView sizeToFit];
-                                                       CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
-                                                       CGFloat scaleHeight = self.scrollView.frame.size.height / self.imageView.frame.size.height;
-                                                       if (self.imageView.frame.size.width <= self.scrollView.frame.size.width ||
-                                                           self.imageView.frame.size.height <= self.scrollView.frame.size.height) {
-                                                           self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                       } else {
-                                                           self.scrollView.maximumZoomScale = 1;
+                                                       if (result) {
+                                                           // 这里会调多次，需重置transform得出正确的frame
+                                                           self.imageView.transform = CGAffineTransformIdentity;
+                                                           self.imageView.image = result;
+                                                           [self.imageView sizeToFit];
+                                                           CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
+                                                           CGFloat scaleHeight = self.scrollView.frame.size.height / self.imageView.frame.size.height;
+                                                           if (self.imageView.frame.size.width <= self.scrollView.frame.size.width ||
+                                                               self.imageView.frame.size.height <= self.scrollView.frame.size.height) {
+                                                               self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                           } else {
+                                                               self.scrollView.maximumZoomScale = 1;
+                                                           }
+                                                           self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
                                                        }
-                                                       self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                       self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
                                                    }];
     
     // mask

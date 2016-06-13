@@ -36,37 +36,51 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.imageManager = [[PHCachingImageManager alloc] init];
     self.tableView.rowHeight = kAlbumThumbnailSize.height + 0.5;
-    
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    self.fetchResults = @[smartAlbums, topLevelUserCollections];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消"
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self.picker
                                                                             action:@selector(dismiss:)];
 
-    if (self.picker.allowsMultipleSelection) {
-        UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
-                                                                           style:UIBarButtonItemStyleDone
-                                                                          target:self.picker
-                                                                          action:@selector(finishPickingAssets:)];
-        doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusRestricted || status == PHAuthorizationStatusDenied) {
+        // 无权限
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 150)];
+        label.textColor = [UIColor darkTextColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:16.0];
+        label.text = @"请在\"设置\"->\"隐私\"->\"相册\"开启访问权限";
+        self.tableView.tableHeaderView = label;
+        self.tableView.tableFooterView = [UIView new];
+        self.tableView.bounces = NO;
+    } else {
+        // 有权限
+        self.imageManager = [[PHCachingImageManager alloc] init];
+        PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+        PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
+        self.fetchResults = @[smartAlbums, topLevelUserCollections];
         
-        self.badgeView = [[SCBadgeView alloc] init];
-        self.badgeView.number = self.picker.selectedAssets.count;
-        UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
-        
-        self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
+        if (self.picker.allowsMultipleSelection) {
+            UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
+                                                                               style:UIBarButtonItemStyleDone
+                                                                              target:self.picker
+                                                                              action:@selector(finishPickingAssets:)];
+            doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
+            
+            self.badgeView = [[SCBadgeView alloc] init];
+            self.badgeView.number = self.picker.selectedAssets.count;
+            UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
+            
+            self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
+            
+            if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
+                [self pushCameraRollViewController];
+            }
+            
+            [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+        }
     }
-
-    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
-        [self pushCameraRollViewController];
-    }
-    
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
 - (void)dealloc {
