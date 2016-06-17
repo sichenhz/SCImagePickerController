@@ -8,8 +8,9 @@
 
 #import "ViewController.h"
 #import "SCImagePickerController.h"
+#import "SCImageClipViewController.h"
 
-@interface ViewController ()<SCImagePickerControllerDelegate>
+@interface ViewController ()<SCImagePickerControllerDelegate, SCImageClipViewControllerDelegate>
 
 @property (nonatomic, strong) UIImageView *imageView;
 
@@ -31,18 +32,22 @@
 }
 
 - (IBAction)startButtonPressed:(id)sender {
-    SCImagePickerController *picker = [[SCImagePickerController alloc] init];
-    picker.delegate = self;
-    
-    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
-    
-    picker.allowsMultipleSelection = YES;
-    picker.maxMultipleCount = 10;
+//    SCImagePickerController *picker = [[SCImagePickerController alloc] init];
+//    picker.delegate = self;
+//    
+//    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
+//    
+////    picker.allowsMultipleSelection = YES;
+////    picker.maxMultipleCount = 10;
+//
+//    picker.allowsEditing = YES;
+//    picker.cropSize = CGSizeMake(750, 750);
+//    
+//    [self presentViewController:picker animated:YES completion:nil];
 
-    picker.allowsEditing = YES;
-    picker.cropSize = CGSizeMake(750, 750);
-    
-    [self presentViewController:picker animated:YES completion:nil];
+    SCImageClipViewController *clipViewController = [[SCImageClipViewController alloc] initWithImage:[UIImage imageNamed:@"IMG_4034.jpg"] cropSize:CGSizeMake(750, 750)];
+    clipViewController.delegate = self;
+    [self presentViewController:clipViewController animated:YES completion:nil];
 }
 
 #pragma mark - SCImagePickerControllerDelegate
@@ -64,6 +69,19 @@
 
 - (void)assetsPickerVontrollerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker {
     NSLog(@"超过最大可选数量 -> %zd", picker.maxMultipleCount);
+}
+
+#pragma mark - SCImageClipViewControllerDelegate
+
+- (void)clipViewControllerDidCancel:(SCImageClipViewController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)clipViewController:(SCImageClipViewController *)picker didFinishClipImage:(UIImage *)image {
+    [self dismissViewControllerAnimated:YES completion:^{
+        NSLog(@"当前编辑图片 -> %@", image);
+        self.imageView.image = image;
+    }];
 }
 
 @end

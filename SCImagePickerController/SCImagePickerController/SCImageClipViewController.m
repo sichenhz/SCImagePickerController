@@ -15,12 +15,24 @@
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIImageView *imageView;
 
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic) CGSize cropSize;
+
 @end
 
 @implementation SCImageClipViewController
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker {
     self.picker = picker;
+    self.cropSize = picker.cropSize;
+    if (self = [super init]) {
+    }
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image cropSize:(CGSize)cropSize {
+    self.image = image;
+    self.cropSize = cropSize;
     if (self = [super init]) {
     }
     return self;
@@ -31,13 +43,9 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    if (CGSizeEqualToSize(self.picker.cropSize, CGSizeZero)) {
-        self.picker.cropSize = CGSizeMake(screenSize.width, screenSize.width);
-    }
 
-    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.picker.cropSize containerSize:[UIScreen mainScreen].bounds.size]];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.cropSize containerSize:[UIScreen mainScreen].bounds.size]];
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -49,29 +57,23 @@
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self.scrollView addSubview:self.imageView];
-    PHAsset *asset = self.picker.selectedAssets.firstObject;
-    [[PHCachingImageManager defaultManager] requestImageForAsset:asset
-                                                      targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
-                                                     contentMode:PHImageContentModeDefault
-                                                         options:nil
-                                                   resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                       if (result) {
-                                                           // 这里会调多次，需重置transform得出正确的frame
-                                                           self.imageView.transform = CGAffineTransformIdentity;
-                                                           self.imageView.image = result;
-                                                           [self.imageView sizeToFit];
-                                                           CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
-                                                           CGFloat scaleHeight = self.scrollView.frame.size.height / self.imageView.frame.size.height;
-                                                           if (self.imageView.frame.size.width <= self.scrollView.frame.size.width ||
-                                                               self.imageView.frame.size.height <= self.scrollView.frame.size.height) {
-                                                               self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                           } else {
-                                                               self.scrollView.maximumZoomScale = 1;
+    
+    if (self.picker) {
+        PHAsset *asset = self.picker.selectedAssets.firstObject;
+        [[PHCachingImageManager defaultManager] requestImageForAsset:asset
+                                                          targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                                                         contentMode:PHImageContentModeDefault
+                                                             options:nil
+                                                       resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                           if (result) {
+                                                               // 这里会调多次，需重置transform得出正确的frame
+                                                               self.imageView.transform = CGAffineTransformIdentity;
+                                                               [self configureImage:result];
                                                            }
-                                                           self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
-                                                           self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
-                                                       }
-                                                   }];
+                                                       }];
+    } else if (self.image) {
+        [self configureImage:self.image];
+    }
     
     // mask
     UIImageView *mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"photo_rule.png"]]];
@@ -115,31 +117,67 @@
 #pragma mark - Action
 
 - (void)cancelButtonPressed:(id)sender {
-    [self.picker.selectedAssets removeObjectAtIndex:0];
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.picker) {
+        [self.picker.selectedAssets removeObjectAtIndex:0];
+        [self.navigationController popViewControllerAnimated:YES];
+    } else if (self.image) {
+        if ([self.delegate respondsToSelector:@selector(clipViewControllerDidCancel:)]) {
+            [self.delegate clipViewControllerDidCancel:self];
+        }
+    }
 }
 
 - (void)selectButtonPressed:(id)sender {
-    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
-        [self.picker.delegate assetsPickerController:self.picker didFinishPickingImage:[self clibImage:self.imageView.image]];
+    if (self.picker) {
+        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
+            [self.picker.delegate assetsPickerController:self.picker didFinishPickingImage:[self clibImage:self.imageView.image]];
+        }
+    } else if (self.image) {
+        if ([self.delegate respondsToSelector:@selector(clipViewController:didFinishClipImage:)]) {
+            [self.delegate clipViewController:self didFinishClipImage:[self clibImage:self.imageView.image]];
+        }
     }
 }
 
 #pragma mark - Private Method
 
+- (void)configureImage:(UIImage *)image {
+    self.imageView.image = image;
+    [self.imageView sizeToFit];
+    CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
+    CGFloat scaleHeight = self.scrollView.frame.size.height / self.imageView.frame.size.height;
+    if (self.imageView.frame.size.width <= self.scrollView.frame.size.width ||
+        self.imageView.frame.size.height <= self.scrollView.frame.size.height) {
+        self.scrollView.maximumZoomScale = MAX(scaleWidth, scaleHeight);
+    } else {
+        self.scrollView.maximumZoomScale = 1;
+    }
+    self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+    self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
+}
+
+- (void)setCropSize:(CGSize)cropSize {
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    if (CGSizeEqualToSize(cropSize, CGSizeZero)) {
+        _cropSize = CGSizeMake(screenSize.width, screenSize.width);
+    } else {
+        _cropSize = cropSize;
+    }
+}
+
 - (UIImage *)clibImage:(UIImage *)image {
     CGFloat scale  = self.scrollView.zoomScale;
     CGPoint offset = self.scrollView.contentOffset;
     CGFloat scrollViewScale;
-    if (self.picker.cropSize.height / self.picker.cropSize.width <= self.scrollView.frame.size.height / self.scrollView.frame.size.width) {
-        scrollViewScale = self.picker.cropSize.width / (self.scrollView.frame.size.width * [[UIScreen mainScreen] scale]);
+    if (self.cropSize.height / self.cropSize.width <= self.scrollView.frame.size.height / self.scrollView.frame.size.width) {
+        scrollViewScale = self.cropSize.width / (self.scrollView.frame.size.width * [[UIScreen mainScreen] scale]);
     } else {
-        scrollViewScale = self.picker.cropSize.height / (self.scrollView.frame.size.height * [[UIScreen mainScreen] scale]);
+        scrollViewScale = self.cropSize.height / (self.scrollView.frame.size.height * [[UIScreen mainScreen] scale]);
     }
     CGFloat orignalScale = scale * [[UIScreen mainScreen] scale] * scrollViewScale;
     CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale] * scrollViewScale,
                                         offset.y * [[UIScreen mainScreen] scale] * scrollViewScale);
-    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.picker.cropSize.width, self.picker.cropSize.height);
+    CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.cropSize.width, self.cropSize.height);
     UIImage *resultImage = [image crop:cropRect scale:orignalScale];
     return resultImage;
 }

@@ -73,13 +73,13 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
             UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
             
             self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
-            
-            if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
-                [self pushCameraRollViewController];
-            }
-            
-            [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
         }
+        
+        if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
+            [self pushCameraRollViewController];
+        }
+        
+        [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     }
 }
 
