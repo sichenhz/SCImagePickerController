@@ -32,22 +32,22 @@
 }
 
 - (IBAction)startButtonPressed:(id)sender {
-//    SCImagePickerController *picker = [[SCImagePickerController alloc] init];
-//    picker.delegate = self;
-//    
-//    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
-//    
-////    picker.allowsMultipleSelection = YES;
-////    picker.maxMultipleCount = 10;
-//
-//    picker.allowsEditing = YES;
-//    picker.cropSize = CGSizeMake(750, 750);
-//    
-//    [self presentViewController:picker animated:YES completion:nil];
+    SCImagePickerController *picker = [[SCImagePickerController alloc] init];
+    picker.delegate = self;
+    
+    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
+    
+//    picker.allowsMultipleSelection = YES;
+//    picker.maxMultipleCount = 10;
 
-    SCImageClipViewController *clipViewController = [[SCImageClipViewController alloc] initWithImage:[UIImage imageNamed:@"IMG_4034.jpg"] cropSize:CGSizeMake(750, 750)];
-    clipViewController.delegate = self;
-    [self presentViewController:clipViewController animated:YES completion:nil];
+    picker.allowsEditing = YES;
+    picker.cropSize = CGSizeMake(750, 750);
+    
+    [self presentViewController:picker animated:YES completion:nil];
+
+//    SCImageClipViewController *clipViewController = [[SCImageClipViewController alloc] initWithImage:[UIImage imageNamed:@"IMG_4034.jpg"] cropSize:CGSizeMake(750, 750)];
+//    clipViewController.delegate = self;
+//    [self presentViewController:clipViewController animated:YES completion:nil];
 }
 
 #pragma mark - SCImagePickerControllerDelegate
