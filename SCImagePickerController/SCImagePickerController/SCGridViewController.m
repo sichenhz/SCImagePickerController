@@ -185,10 +185,12 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     cell.representedAssetIdentifier = asset.localIdentifier;
     
     // Request an image for the asset from the PHCachingImageManager.
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
     [self.imageManager requestImageForAsset:asset
                                  targetSize:AssetGridThumbnailSize
                                 contentMode:PHImageContentModeAspectFill
-                                    options:nil
+                                    options:options
                               resultHandler:^(UIImage *result, NSDictionary *info) {
                                   // Set the cell's thumbnail image if it's still showing the same asset.
                                   if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {

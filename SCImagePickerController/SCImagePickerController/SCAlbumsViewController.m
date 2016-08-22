@@ -216,10 +216,12 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     // Request an image for the collection from the PHCachingImageManager.
     CGFloat scale = [UIScreen mainScreen].scale;
     PHAsset *asset = assets.firstObject;
+    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
     [self.imageManager requestImageForAsset:asset
                                  targetSize:CGSizeMake(self.tableView.rowHeight * scale, self.tableView.rowHeight * scale)
                                 contentMode:PHImageContentModeAspectFill
-                                    options:nil
+                                    options:options
                               resultHandler:^(UIImage *result, NSDictionary *info) {
                                   // Set the cell's thumbnail image if it's still showing the same album.
                                   if ([cell.representedAlbumIdentifier isEqualToString:currentAlbumIdentifier]) {
