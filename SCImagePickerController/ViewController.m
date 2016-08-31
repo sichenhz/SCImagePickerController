@@ -37,8 +37,8 @@
     
     picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
     
-//    picker.allowsMultipleSelection = YES;
-//    picker.maxMultipleCount = 10;
+    picker.allowsMultipleSelection = YES;
+    picker.maxMultipleCount = 10;
 
     picker.allowsEditing = YES;
     picker.cropSize = CGSizeMake(750, 750);

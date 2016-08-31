@@ -81,9 +81,9 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 // 有权限
 - (void)showAlbums {
     self.imageManager = [[PHCachingImageManager alloc] init];
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    self.fetchResults = @[smartAlbums, topLevelUserCollections];
+    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+    PHFetchResult *albums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+    self.fetchResults = @[smartAlbums, albums];
     
     if (self.picker.allowsMultipleSelection) {
         [self attachRightBarButton];
@@ -133,16 +133,20 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     
     NSMutableArray *assetCollections = [NSMutableArray array];
     
-    for (PHFetchResult *fetchResult in fetchResults)
-    {
+    for (PHFetchResult *fetchResult in fetchResults) {
         for (PHCollection *collection in fetchResult) {
-            if ([collection isKindOfClass:[PHAssetCollection class]])
-            {
+            if ([collection isKindOfClass:[PHAssetCollection class]]) {
                 PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
                 PHFetchResult *assets = [self assetsInAssetCollection:assetCollection];
                 if (assets.count > 0) {
                     if (assetCollection.assetCollectionSubtype == PHAssetCollectionSubtypeSmartAlbumUserLibrary) {
                         [assetCollections insertObject:assetCollection atIndex:0];
+                    } else if (assetCollection.assetCollectionSubtype == PHAssetCollectionSubtypeAlbumMyPhotoStream) {
+                        if (assetCollections.count > 0 && [assetCollections[0] assetCollectionSubtype] == PHAssetCollectionSubtypeSmartAlbumUserLibrary) {
+                            [assetCollections insertObject:assetCollection atIndex:1];
+                        } else {
+                            [assetCollections insertObject:assetCollection atIndex:0];
+                        }
                     } else {
                         [assetCollections addObject:assetCollection];
                     }
