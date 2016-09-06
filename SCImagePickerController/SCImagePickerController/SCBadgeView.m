@@ -107,7 +107,7 @@ static CGSize const SCBadgeViewSize = {17, 17};
             }
             [_button setTitle:text forState:UIControlStateNormal];
             [_button.titleLabel sizeToFit];
-            CGFloat width = _button.titleLabel.frame.size.width;
+            CGFloat width = _button.titleLabel.frame.size.width + 6;
             
             switch (self.type) {
                 case SCBadgeViewTypeDefault:
