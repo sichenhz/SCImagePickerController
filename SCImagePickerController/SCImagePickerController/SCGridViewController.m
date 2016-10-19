@@ -185,19 +185,22 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
                         [collectionView insertItemsAtIndexPaths:insertedPaths];
                     }
                     
-                    if (changedPaths) {
-                        [collectionView reloadItemsAtIndexPaths:changedPaths];
-                    }
-                    
-                    if ([collectionChanges hasMoves]) {
-                        [collectionChanges enumerateMovesWithBlock:^(NSUInteger fromIndex, NSUInteger toIndex) {
-                            NSIndexPath *fromIndexPath = [NSIndexPath indexPathForItem:fromIndex inSection:0];
-                            NSIndexPath *toIndexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
-                            [collectionView moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
-                        }];
-                    }
-                    
-                } completion:nil];
+                } completion:^(BOOL finished) {
+                    [collectionView performBatchUpdates:^{
+                        if (changedPaths) {
+                            [collectionView reloadItemsAtIndexPaths:changedPaths];
+                        }
+                        
+                        if ([collectionChanges hasMoves]) {
+                            [collectionChanges enumerateMovesWithBlock:^(NSUInteger fromIndex, NSUInteger toIndex) {
+                                NSIndexPath *fromIndexPath = [NSIndexPath indexPathForItem:fromIndex inSection:0];
+                                NSIndexPath *toIndexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
+                                [collectionView moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
+                            }];
+                        }
+                        
+                    } completion:nil];
+                }];
             }
             
             [self resetCachedAssets];
