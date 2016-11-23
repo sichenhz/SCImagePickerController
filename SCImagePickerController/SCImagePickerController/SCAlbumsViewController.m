@@ -153,10 +153,14 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 }
 
 - (PHFetchResult *)assetsInAssetCollection:(PHAssetCollection *)collection {
-    PHFetchOptions *options = [[PHFetchOptions alloc] init];
-    options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-    return [PHAsset fetchAssetsInAssetCollection:(PHAssetCollection *)collection options:options];
+    if (self.picker.mediaTypes.count) {
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        return [PHAsset fetchAssetsInAssetCollection:(PHAssetCollection *)collection options:options];
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - UITableViewDataSource
