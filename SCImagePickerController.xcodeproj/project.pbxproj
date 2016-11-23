@@ -161,6 +161,7 @@
 				TargetAttributes = {
 					25FE67341CEEB5FC0033483B = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = JEML7X75SB;
 					};
 				};
 			};
@@ -325,6 +326,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JEML7X75SB;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -337,6 +339,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = JEML7X75SB;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

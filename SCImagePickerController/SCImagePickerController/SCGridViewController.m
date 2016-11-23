@@ -40,7 +40,7 @@
 
 @end
 
-@interface SCGridViewController() <PHPhotoLibraryChangeObserver>
+@interface SCGridViewController()
 
 @property (nonatomic, weak) SCImagePickerController *picker;
 @property (nonatomic, strong) PHCachingImageManager *imageManager;
@@ -90,8 +90,6 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
 
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.contentInset = UIEdgeInsetsMake(1, 0, 1, 0);
 
@@ -115,99 +113,6 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     
     // Begin caching assets in and around collection view's visible rect.
     [self updateCachedAssets];
-}
-
-- (void)dealloc {
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-}
-
-#pragma mark - PHPhotoLibraryChangeObserver
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance {
-    // Check if there are changes to the assets we are showing.
-    PHFetchResultChangeDetails *collectionChanges = [changeInstance changeDetailsForFetchResult:self.assets];
-    if (collectionChanges == nil) { return; }
-    
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Get the new fetch result.
-        self.assets = [collectionChanges fetchResultAfterChanges];
-        
-        UICollectionView *collectionView = self.collectionView;
-        NSArray *removedPaths;
-        NSArray *insertedPaths;
-        NSArray *changedPaths;
-        
-        if ([collectionChanges hasIncrementalChanges]) {
-            
-            NSIndexSet *removedIndexes = [collectionChanges removedIndexes];
-            removedPaths = [removedIndexes aapl_indexPathsFromIndexesWithSection:0];
-            
-            NSIndexSet *insertedIndexes = [collectionChanges insertedIndexes];
-            insertedPaths = [insertedIndexes aapl_indexPathsFromIndexesWithSection:0];
-            
-            NSIndexSet *changedIndexes = [collectionChanges changedIndexes];
-            changedPaths = [changedIndexes aapl_indexPathsFromIndexesWithSection:0];
-            
-            BOOL shouldReload = NO;
-            
-            if (changedPaths != nil && removedPaths != nil) {
-                for (NSIndexPath *changedPath in changedPaths) {
-                    if ([removedPaths containsObject:changedPath]) {
-                        shouldReload = YES;
-                        break;
-                    }
-                }
-            }
-            
-            if (removedPaths.lastObject && ((NSIndexPath *)removedPaths.lastObject).item >= self.assets.count) {
-                shouldReload = YES;
-            }
-            
-            if (shouldReload) {
-                // Reload the collection view if the incremental diffs are not available
-                [collectionView reloadData];
-                
-            } else {
-                /*
-                 Tell the collection view to animate insertions and deletions if we
-                 have incremental diffs.
-                 */
-                [collectionView performBatchUpdates:^{
-                    if (removedPaths) {
-                        [collectionView deleteItemsAtIndexPaths:removedPaths];
-                    }
-                    
-                    if (insertedPaths) {
-                        [collectionView insertItemsAtIndexPaths:insertedPaths];
-                    }
-                    
-                } completion:^(BOOL finished) {
-                    [collectionView performBatchUpdates:^{
-                        if (changedPaths) {
-                            [collectionView reloadItemsAtIndexPaths:changedPaths];
-                        }
-                        
-                        if ([collectionChanges hasMoves]) {
-                            [collectionChanges enumerateMovesWithBlock:^(NSUInteger fromIndex, NSUInteger toIndex) {
-                                NSIndexPath *fromIndexPath = [NSIndexPath indexPathForItem:fromIndex inSection:0];
-                                NSIndexPath *toIndexPath = [NSIndexPath indexPathForItem:toIndex inSection:0];
-                                [collectionView moveItemAtIndexPath:fromIndexPath toIndexPath:toIndexPath];
-                            }];
-                        }
-                        
-                    } completion:nil];
-                }];
-            }
-            
-            [self resetCachedAssets];
-        } else {
-            [collectionView reloadData];
-        }
-    });
 }
 
 #pragma mark - UICollectionViewDataSource

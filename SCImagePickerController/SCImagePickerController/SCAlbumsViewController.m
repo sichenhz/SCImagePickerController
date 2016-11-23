@@ -14,7 +14,7 @@
 
 static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReuseIdentifier";
 
-@interface SCAlbumsViewController() <PHPhotoLibraryChangeObserver>
+@interface SCAlbumsViewController()
 
 @property (nonatomic, strong) NSArray <PHFetchResult *>*fetchResults;
 @property (nonatomic, strong) NSArray <PHAssetCollection *>*assetCollections;
@@ -62,10 +62,6 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     }
 }
 
-- (void)dealloc {
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-}
-
 // 无权限
 - (void)showNoAuthority {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 150)];
@@ -92,8 +88,6 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
         [self pushCameraRollViewController];
     }
-
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
 - (void)attachRightBarButton {
@@ -163,34 +157,6 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     options.predicate = [NSPredicate predicateWithFormat:@"mediaType in %@", self.picker.mediaTypes];
     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     return [PHAsset fetchAssetsInAssetCollection:(PHAssetCollection *)collection options:options];
-}
-
-#pragma mark - PHPhotoLibraryChangeObserver
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance {
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Loop through the section fetch results, replacing any fetch results that have been updated.
-        NSMutableArray *updatedSectionFetchResults = [self.fetchResults mutableCopy];
-        __block BOOL reloadRequired = NO;
-        
-        [self.fetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
-            
-            if (changeDetails != nil) {
-                [updatedSectionFetchResults replaceObjectAtIndex:index withObject:[changeDetails fetchResultAfterChanges]];
-                reloadRequired = YES;
-            }
-        }];
-        
-        if (reloadRequired) {
-            self.fetchResults = updatedSectionFetchResults;
-            [self.tableView reloadData];
-        }
-    });
 }
 
 #pragma mark - UITableViewDataSource
