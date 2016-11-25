@@ -32,16 +32,17 @@
 }
 
 - (IBAction)startButtonPressed:(id)sender {
+    
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
     
-    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
+    picker.sourceType = SCImagePickerControllerSourceTypeCamera;
     
-    picker.allowsMultipleSelection = YES;
-    picker.maxMultipleCount = 10;
+//    picker.allowsMultipleSelection = YES;
+//    picker.maxMultipleCount = 10;
 
     picker.allowsEditing = YES;
-    picker.cropSize = CGSizeMake(750, 750);
+    picker.cropSize = CGSizeMake(750, 900);
     
     [self presentViewController:picker animated:YES completion:nil];
 

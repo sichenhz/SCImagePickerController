@@ -22,6 +22,8 @@
 
 @implementation SCImageClipViewController
 
+#pragma mark - Life Cycle
+
 - (instancetype)initWithPicker:(SCImagePickerController *)picker {
     self.picker = picker;
     self.cropSize = picker.cropSize;
@@ -42,10 +44,10 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor blackColor];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    self.view.clipsToBounds = YES;
 
     self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.cropSize containerSize:[UIScreen mainScreen].bounds.size]];
+    self.scrollView.clipsToBounds = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.alwaysBounceVertical = YES;
@@ -76,6 +78,7 @@
     }
     
     // mask
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
     UIImageView *mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"photo_rule.png"]]];
     mask.frame = self.scrollView.frame;
     [self.view addSubview:mask];
@@ -154,6 +157,12 @@
     }
     self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
     self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
+    
+    if (image.size.height > image.size.width) {
+        self.scrollView.contentOffset = CGPointMake(0, (image.size.height * self.scrollView.zoomScale - self.scrollView.frame.size.height) / 2);
+    } else {
+        self.scrollView.contentOffset = CGPointMake((image.size.width * self.scrollView.zoomScale - self.scrollView.frame.size.width) / 2, 0);
+    }
 }
 
 - (void)setCropSize:(CGSize)cropSize {

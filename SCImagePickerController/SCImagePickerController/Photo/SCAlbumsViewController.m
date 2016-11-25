@@ -16,15 +16,22 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 
 @interface SCAlbumsViewController()
 
+@property (nonatomic, weak) SCImagePickerController *picker;
 @property (nonatomic, strong) NSArray <PHFetchResult *>*fetchResults;
 @property (nonatomic, strong) NSArray <PHAssetCollection *>*assetCollections;
-@property (nonatomic, weak) SCImagePickerController *picker;
 @property (nonatomic, strong) PHCachingImageManager *imageManager;
 @property (nonatomic, strong) SCBadgeView *badgeView;
 
 @end
 
 @implementation SCAlbumsViewController
+
+#pragma mark - Life Cycle
+
+- (instancetype)initWithPicker:(SCImagePickerController *)picker {
+    self.picker = picker;
+    return [self init];
+}
 
 - (instancetype)init {
     if (self = [super initWithStyle:UITableViewStylePlain]) {
@@ -62,65 +69,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     }
 }
 
-// 无权限
-- (void)showNoAuthority {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 150)];
-    label.textColor = [UIColor darkTextColor];
-    label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:16.0];
-    label.text = @"请在\"设置\"->\"隐私\"->\"相册\"开启访问权限";
-    self.tableView.tableHeaderView = label;
-    self.tableView.tableFooterView = [UIView new];
-    self.tableView.bounces = NO;
-}
-
-// 有权限
-- (void)showAlbums {
-    self.imageManager = [[PHCachingImageManager alloc] init];
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-    PHFetchResult *albums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-    self.fetchResults = @[smartAlbums, albums];
-    
-    if (self.picker.allowsMultipleSelection) {
-        [self attachRightBarButton];
-    }
-    
-    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum) {
-        [self pushCameraRollViewController];
-    }
-}
-
-- (void)attachRightBarButton {
-    UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
-                                                                       style:UIBarButtonItemStyleDone
-                                                                      target:self.picker
-                                                                      action:@selector(finishPickingAssets:)];
-    doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
-    
-    self.badgeView = [[SCBadgeView alloc] init];
-    self.badgeView.number = self.picker.selectedAssets.count;
-    UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
-    
-    self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
-}
-
-- (void)pushCameraRollViewController {
-    PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-    
-    if (collections.count > 0) {
-        PHAssetCollection *collection = collections[0];
-        
-        SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
-        cameraRollViewController.assets = [self assetsInAssetCollection:collection];
-        cameraRollViewController.title = collection.localizedTitle;
-        
-        [self.navigationController pushViewController:cameraRollViewController animated:NO];
-    }
-}
-
-- (SCImagePickerController *)picker {
-    return (SCImagePickerController *)self.navigationController.parentViewController;
-}
+#pragma mark - Setter
 
 - (void)setFetchResults:(NSArray<PHFetchResult *> *)fetchResults {
     _fetchResults = fetchResults;
@@ -148,8 +97,65 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
             }
         }
     }
-
+    
     self.assetCollections = [assetCollections copy];
+}
+
+#pragma mark - Private Method
+
+- (void)showNoAuthority {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 150)];
+    label.textColor = [UIColor darkTextColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:16.0];
+    label.text = @"请在\"设置\"->\"隐私\"->\"相册\"开启访问权限";
+    self.tableView.tableHeaderView = label;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.bounces = NO;
+}
+
+- (void)showAlbums {
+    self.imageManager = [[PHCachingImageManager alloc] init];
+    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+    PHFetchResult *albums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+    self.fetchResults = @[smartAlbums, albums];
+    
+    if (self.picker.allowsMultipleSelection) {
+        [self attachRightBarButton];
+    }
+    
+    if (self.picker.sourceType == SCImagePickerControllerSourceTypeSavedPhotosAlbum ||
+        self.picker.sourceType == SCImagePickerControllerSourceTypeCamera) {
+        [self pushCameraRollViewController];
+    }
+}
+
+- (void)attachRightBarButton {
+    UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
+                                                                       style:UIBarButtonItemStyleDone
+                                                                      target:self.picker
+                                                                      action:@selector(finishPickingAssets:)];
+    doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
+    
+    self.badgeView = [[SCBadgeView alloc] init];
+    self.badgeView.number = self.picker.selectedAssets.count;
+    UIBarButtonItem *badgeButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.badgeView];
+    
+    self.navigationItem.rightBarButtonItems = @[doneButtonItem, badgeButtonItem];
+}
+
+- (void)pushCameraRollViewController {
+    PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    
+    if (collections.count > 0) {
+        PHAssetCollection *collection = collections[0];
+        
+        SCGridViewController *cameraRollViewController = [[SCGridViewController alloc] initWithPicker:self.picker];
+        cameraRollViewController.assets = [self assetsInAssetCollection:collection];
+        cameraRollViewController.title = collection.localizedTitle;
+        
+        [self.navigationController pushViewController:cameraRollViewController animated:NO];
+    }
 }
 
 - (PHFetchResult *)assetsInAssetCollection:(PHAssetCollection *)collection {
@@ -211,7 +217,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     PHAssetCollection *assetCollection = self.assetCollections[indexPath.row];
 
-    SCGridViewController *gridViewController = [[SCGridViewController alloc] initWithPicker:[self picker]];
+    SCGridViewController *gridViewController = [[SCGridViewController alloc] initWithPicker:self.picker];
     gridViewController.assets = [self assetsInAssetCollection:assetCollection];
     gridViewController.title = assetCollection.localizedTitle;
     

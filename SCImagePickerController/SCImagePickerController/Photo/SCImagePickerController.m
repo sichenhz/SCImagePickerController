@@ -9,22 +9,17 @@
 #import "SCImagePickerController.h"
 #import "SCAlbumsViewController.h"
 #import "SCImageClipViewController.h"
+#import "SCCameraViewController.h"
 #import "SCBadgeView.h"
-@import Photos;
 
 @implementation SCImagePickerController
+
+#pragma mark - Life Cycle
 
 - (instancetype)init {
     if (self = [super init]) {
         _selectedAssets = [[NSMutableArray alloc] init];
         _mediaTypes = @[@(PHAssetMediaTypeImage)];
-        _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] init]];
-        _navigationController.navigationBar.barTintColor = [UIColor colorWithRed:71/255.0f green:71/255.0f blue:89/255.0f alpha:1.0f];
-        _navigationController.navigationBar.tintColor = [UIColor whiteColor];
-        _navigationController.navigationBar.titleTextAttributes = @{
-                                                                    NSForegroundColorAttributeName  :   [UIColor whiteColor],
-                                                                    NSFontAttributeName             :   [UIFont systemFontOfSize:18]
-                                                                    };
     }
     return self;
 }
@@ -32,12 +27,39 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.navigationController willMoveToParentViewController:self];
-    [self.navigationController.view setFrame:self.view.frame];
-    [self.view addSubview:self.navigationController.view];
-    [self addChildViewController:self.navigationController];
-    [self.navigationController didMoveToParentViewController:self];
+    if (self.sourceType == SCImagePickerControllerSourceTypeCamera) {
+        
+        SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
+        [self.view addSubview:camera.view];
+        [self addChildViewController:camera];
+
+    } else {
+        
+        [self.navigationController willMoveToParentViewController:self];
+        [self.navigationController.view setFrame:self.view.frame];
+        [self.view addSubview:self.navigationController.view];
+        [self addChildViewController:self.navigationController];
+        [self.navigationController didMoveToParentViewController:self];
+        
+    }
 }
+
+#pragma mark - Getter
+
+- (UINavigationController *)navigationController {
+    if (!_navigationController) {
+        _navigationController = [[UINavigationController alloc] initWithRootViewController:[[SCAlbumsViewController alloc] initWithPicker:self]];
+        _navigationController.navigationBar.barTintColor = [UIColor colorWithRed:71/255.0f green:71/255.0f blue:89/255.0f alpha:1.0f];
+        _navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        _navigationController.navigationBar.titleTextAttributes = @{
+                                                                    NSForegroundColorAttributeName  :   [UIColor whiteColor],
+                                                                    NSFontAttributeName             :   [UIFont systemFontOfSize:18]
+                                                                    };
+    }
+    return _navigationController;
+}
+
+#pragma mark - Public Method
 
 - (void)selectAsset:(PHAsset *)asset {
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
@@ -71,6 +93,8 @@
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
+
+#pragma mark - Private Method
 
 - (void)updateDoneButton {
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];

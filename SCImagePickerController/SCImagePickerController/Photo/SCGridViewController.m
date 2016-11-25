@@ -8,8 +8,9 @@
 
 #import "SCGridViewController.h"
 #import "SCImagePickerController.h"
-#import "SCAlbumsViewController.h"
+#import "SCCameraViewController.h"
 #import "SCGridViewCell.h"
+#import "SCCameraViewCell.h"
 #import "SCBadgeView.h"
 
 // Helper methods
@@ -50,13 +51,18 @@
 @end
 
 static CGSize AssetGridThumbnailSize;
-NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
+static NSInteger const NumberOfColumns = 3;
+static CGFloat const InteritemSpacing = 1.0;
+static NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
+static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifier";
 
 @implementation SCGridViewController
 {
     CGFloat screenWidth;
     CGFloat screenHeight;
 }
+
+#pragma mark - Life Cycle
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker {
     //Custom init. The picker contains custom information to create the FlowLayout
@@ -66,12 +72,12 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     screenHeight = CGRectGetHeight(picker.view.bounds);
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.minimumInteritemSpacing = 1;
-    NSInteger cellTotalUsableWidth = screenWidth - 3;
-    layout.itemSize = CGSizeMake(cellTotalUsableWidth / 4, cellTotalUsableWidth / 4);
-    CGFloat cellTotalUsedWidth = layout.itemSize.width * 4;
+    layout.minimumInteritemSpacing = InteritemSpacing;
+    NSInteger cellTotalUsableWidth = screenWidth - (NumberOfColumns - 1) * InteritemSpacing;
+    layout.itemSize = CGSizeMake(cellTotalUsableWidth / NumberOfColumns, cellTotalUsableWidth / NumberOfColumns);
+    CGFloat cellTotalUsedWidth = layout.itemSize.width * NumberOfColumns;
     CGFloat spaceTotalWidth = screenWidth - cellTotalUsedWidth;
-    CGFloat spaceWidth = spaceTotalWidth / 3;
+    CGFloat spaceWidth = spaceTotalWidth / (NumberOfColumns - 1);
     layout.minimumLineSpacing = spaceWidth;
 
     if (self = [super initWithCollectionViewLayout:layout]) {
@@ -80,6 +86,8 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
         self.collectionView.allowsMultipleSelection = picker.allowsMultipleSelection;
         [self.collectionView registerClass:SCGridViewCell.class
                 forCellWithReuseIdentifier:SCGridViewCellIdentifier];
+        [self.collectionView registerClass:SCCameraViewCell.class
+                forCellWithReuseIdentifier:SCCameraViewCellIdentifier];
     }
     return self;
 }
@@ -112,76 +120,6 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     [super viewDidAppear:animated];
     
     // Begin caching assets in and around collection view's visible rect.
-    [self updateCachedAssets];
-}
-
-#pragma mark - UICollectionViewDataSource
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.assets.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PHAsset *asset = self.assets[indexPath.item];
-
-    // Dequeue an SCGridViewCell.
-    SCGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SCGridViewCellIdentifier forIndexPath:indexPath];
-    cell.representedAssetIdentifier = asset.localIdentifier;
-    
-    // Request an image for the asset from the PHCachingImageManager.
-    PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    [self.imageManager requestImageForAsset:asset
-                                 targetSize:AssetGridThumbnailSize
-                                contentMode:PHImageContentModeAspectFill
-                                    options:options
-                              resultHandler:^(UIImage *result, NSDictionary *info) {
-                                  // Set the cell's thumbnail image if it's still showing the same asset.
-                                  if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
-                                      cell.thumbnailView.image = result;
-                                  }
-                              }];
-    
-    cell.allowsSelection = self.picker.allowsMultipleSelection;
-    if ([self.picker.selectedAssets containsObject:asset]) {
-        cell.selected = YES;
-        [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-    } else {
-        cell.selected = NO;
-    }
-    
-    return cell;
-}
-
-#pragma mark - UICollectionViewDelegate
-
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.picker.maxMultipleCount > 0 && self.picker.maxMultipleCount == self.picker.selectedAssets.count) {
-        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerVontrollerDidOverrunMaxMultipleCount:)]) {
-            [self.picker.delegate assetsPickerVontrollerDidOverrunMaxMultipleCount:self.picker];
-        }
-        return NO;
-    } else {
-        return YES;
-    }
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    PHAsset *asset = self.assets[indexPath.item];
-    
-    [self.picker selectAsset:asset];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    PHAsset *asset = self.assets[indexPath.item];
-    
-    [self.picker deselectAsset:asset];
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    // Update cached assets for the new visible area.
     [self updateCachedAssets];
 }
 
@@ -232,6 +170,8 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     }
 }
 
+#pragma mark - Private Method
+
 - (void)computeDifferenceBetweenRect:(CGRect)oldRect andRect:(CGRect)newRect removedHandler:(void (^)(CGRect removedRect))removedHandler addedHandler:(void (^)(CGRect addedRect))addedHandler {
     if (CGRectIntersectsRect(newRect, oldRect)) {
         CGFloat oldMaxY = CGRectGetMaxY(oldRect);
@@ -269,11 +209,118 @@ NSString * const SCGridViewCellIdentifier = @"SCGridViewCellIdentifier";
     
     NSMutableArray *assets = [NSMutableArray arrayWithCapacity:indexPaths.count];
     for (NSIndexPath *indexPath in indexPaths) {
-        PHAsset *asset = self.assets[indexPath.item];
+        if (indexPath.item == 0) {
+            continue;
+        }
+        PHAsset *asset = self.assets[indexPath.item - 1];
         [assets addObject:asset];
     }
     
     return assets;
+}
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return 1 + self.assets.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.item == 0) {
+        
+        SCCameraViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SCCameraViewCellIdentifier forIndexPath:indexPath];
+        
+        return cell;
+        
+    } else {
+        
+        PHAsset *asset = self.assets[indexPath.item - 1];
+        
+        // Dequeue an SCGridViewCell.
+        SCGridViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:SCGridViewCellIdentifier forIndexPath:indexPath];
+        cell.representedAssetIdentifier = asset.localIdentifier;
+        
+        // Request an image for the asset from the PHCachingImageManager.
+        PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
+        [self.imageManager requestImageForAsset:asset
+                                     targetSize:AssetGridThumbnailSize
+                                    contentMode:PHImageContentModeAspectFill
+                                        options:options
+                                  resultHandler:^(UIImage *result, NSDictionary *info) {
+                                      // Set the cell's thumbnail image if it's still showing the same asset.
+                                      if ([cell.representedAssetIdentifier isEqualToString:asset.localIdentifier]) {
+                                          cell.thumbnailView.image = result;
+                                      }
+                                  }];
+        
+        cell.allowsSelection = self.picker.allowsMultipleSelection;
+        if ([self.picker.selectedAssets containsObject:asset]) {
+            cell.selected = YES;
+            [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        } else {
+            cell.selected = NO;
+        }
+        
+        return cell;
+        
+    }
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 0) {
+        
+        return YES;
+        
+    } else {
+        
+        if (self.picker.maxMultipleCount > 0 && self.picker.maxMultipleCount == self.picker.selectedAssets.count) {
+            if ([self.picker.delegate respondsToSelector:@selector(assetsPickerVontrollerDidOverrunMaxMultipleCount:)]) {
+                [self.picker.delegate assetsPickerVontrollerDidOverrunMaxMultipleCount:self.picker];
+            }
+            return NO;
+        } else {
+            return YES;
+        }
+        
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 0) {
+        
+        if (self.picker.presentedViewController) {
+            [self.picker dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            [self.picker presentViewController:[[SCCameraViewController alloc] initWithPicker:self.picker] animated:YES completion:nil];
+        }
+        
+    } else {
+        
+        PHAsset *asset = self.assets[indexPath.item - 1];
+        [self.picker selectAsset:asset];
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 0) {
+        
+    } else {
+        
+        PHAsset *asset = self.assets[indexPath.item - 1];
+        [self.picker deselectAsset:asset];
+        
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // Update cached assets for the new visible area.
+    [self updateCachedAssets];
 }
 
 @end

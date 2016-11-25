@@ -31,7 +31,6 @@
         _thumbnailView.frame = CGRectMake(0, 0, cellSize, cellSize);
         _thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
         _thumbnailView.clipsToBounds = YES;
-        _thumbnailView.translatesAutoresizingMaskIntoConstraints = NO;
         _thumbnailView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:_thumbnailView];
         
@@ -46,7 +45,6 @@
         if (_allowsSelection) {
             
             UIView *selectedCoverView = [[UIView alloc] initWithFrame:self.bounds];
-            selectedCoverView.translatesAutoresizingMaskIntoConstraints = NO;
             selectedCoverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
             selectedCoverView.backgroundColor = [UIColor colorWithRed:0.24 green:0.47 blue:0.85 alpha:0.6];
             selectedCoverView.hidden = YES;
@@ -58,7 +56,6 @@
             selectionButton.contentMode = UIViewContentModeTopRight;
             selectionButton.adjustsImageWhenHighlighted = NO;
             [selectionButton setImage:nil forState:UIControlStateNormal];
-            selectionButton.translatesAutoresizingMaskIntoConstraints = NO;
             selectionButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
             [selectionButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickw.png"]] forState:UIControlStateNormal];
             [selectionButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"tickH.png"]] forState:UIControlStateSelected];

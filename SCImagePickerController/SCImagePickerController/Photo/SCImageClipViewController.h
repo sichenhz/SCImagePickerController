@@ -13,7 +13,7 @@
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker;
 
-// 作为单独的工具使用
+// Call this method and set delegate if you want to use it as a stand-alone tool.
 - (instancetype)initWithImage:(UIImage *)image cropSize:(CGSize)cropSize;
 @property (nonatomic, weak) id <SCImageClipViewControllerDelegate>delegate;
 

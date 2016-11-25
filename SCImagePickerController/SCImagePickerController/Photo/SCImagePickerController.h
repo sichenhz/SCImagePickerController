@@ -6,14 +6,14 @@
 //  Copyright © 2016年 sichenwang. All rights reserved.
 //
 
-@import UIKit;
 @import Photos;
 
 @protocol SCImagePickerControllerDelegate;
 
 typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
     SCImagePickerControllerSourceTypePhotoLibrary,
-    SCImagePickerControllerSourceTypeSavedPhotosAlbum
+    SCImagePickerControllerSourceTypeSavedPhotosAlbum,
+    SCImagePickerControllerSourceTypeCamera
 };
 
 @interface SCImagePickerController : UIViewController
