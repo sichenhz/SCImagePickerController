@@ -11,7 +11,7 @@
 
 @interface SCImageClipViewController : UIViewController
 
-- (instancetype)initWithPicker:(SCImagePickerController *)picker;
+- (instancetype)initWithImage:(UIImage *)image picker:(SCImagePickerController *)picker;
 
 // Call this method and set delegate if you want to use it as a stand-alone tool.
 - (instancetype)initWithImage:(UIImage *)image cropSize:(CGSize)cropSize;

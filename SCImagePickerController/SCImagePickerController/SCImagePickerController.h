@@ -18,10 +18,9 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 
 @interface SCImagePickerController : UIViewController
 
-@property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
+@property (nonatomic, weak) id <SCImagePickerControllerDelegate> delegate;
 
 @property (nonatomic) SCImagePickerControllerSourceType sourceType;
-
 @property (nonatomic, strong) NSArray *mediaTypes; // default value is an array containing PHAssetMediaTypeImage.
 
 @property (nonatomic) BOOL allowsMultipleSelection; // default value is NO.
@@ -31,17 +30,15 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 @property (nonatomic) BOOL allowsEditing; // default value is NO.
 @property (nonatomic) CGSize cropSize; // default value is {[UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width}
 
-@property (nonatomic, strong) UINavigationController *navigationController;
-
+@property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
 // Managing Asset Selection
 - (void)selectAsset:(PHAsset *)asset;
 - (void)deselectAsset:(PHAsset *)asset;
 
 // User finish Actions
-- (void)finishPickingAssets:(id)sender;
-- (void)dismiss:(id)sender;
-
-@property (nonatomic, weak) id <SCImagePickerControllerDelegate> delegate;
+- (void)finishPickingAssets;
+- (void)finishPickingImage:(UIImage *)image;
+- (void)cancel;
 
 @end
 
@@ -49,13 +46,13 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 
 @optional
 
-- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
-
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
 
-- (void)assetsPickerVontrollerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;
+- (void)assetsPickerControllerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;
 
-// This method is called when allowsMultipleSelection is NO and allowsEditing is YES.
+// This method is called when photos are from albums.
+- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
+// This method is called when image is from camera or cliping.
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingImage:(UIImage *)image;
 
 @end

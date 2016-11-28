@@ -28,6 +28,14 @@
 
 @implementation SCCameraViewController
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
 #pragma mark - Life Cycle
 
 - (instancetype)initWithPicker:(SCImagePickerController *)picker {
@@ -41,7 +49,7 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
+        
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     
     // ----- initialize camera -------- //
@@ -145,7 +153,7 @@
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.cancelButton.frame = CGRectMake(20.0f, screenRect.size.height - 80.0f, 60.0f, 60.0f);
     [self.cancelButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"cancel.png"]] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cancelButton addTarget:self.picker action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.cancelButton];
     
     self.albumsButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -155,15 +163,32 @@
     [self.view addSubview:self.albumsButton];
 }
 
-- (void)cancelButtonPressed:(UIButton *)button {
-    [self.picker dismiss:button];
-}
-
 - (void)albumsButtonPressed:(UIButton *)button {
-    if (self.picker.presentedViewController) {
-        [self.picker dismissViewControllerAnimated:YES completion:nil];
+    
+    if (self.picker.childViewControllers.count == 2) {
+        [self removeFromParentViewController];
+        [self.picker setNeedsStatusBarAppearanceUpdate];
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = self.view.frame;
+            frame.origin.y = frame.size.height;
+            self.view.frame = frame;
+        } completion:^(BOOL finished) {
+            [self.view removeFromSuperview];
+        }];
     } else {
-        [self.picker presentViewController:self.picker.navigationController animated:YES completion:nil];
+        [self.picker.navigationController willMoveToParentViewController:self.picker];
+        [self.picker.navigationController.view setFrame:self.picker.view.frame];
+        __block CGRect frame = self.picker.navigationController.view.frame;
+        frame.origin.y = frame.size.height;
+        self.picker.navigationController.view.frame = frame;
+        [UIView animateWithDuration:0.3 animations:^{
+            frame.origin.y = 0;
+            self.picker.navigationController.view.frame = frame;
+        }];
+        [self.picker.view addSubview:self.picker.navigationController.view];
+        [self.picker addChildViewController:self.picker.navigationController];
+        [self.picker setNeedsStatusBarAppearanceUpdate];
+        [self.picker.navigationController didMoveToParentViewController:self];
     }
 }
 
@@ -212,8 +237,13 @@
     [self.camera capture:^(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error) {
         if (!error) {
             if (self.picker.allowsEditing) {
-                SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithImage:image cropSize:self.picker.cropSize];
-                [self presentViewController:controller animated:YES completion:nil];
+                SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithImage:image picker:self.picker];
+                [controller willMoveToParentViewController:self.picker];
+                [controller.view setFrame:self.picker.view.frame];
+                [self.picker.view addSubview:controller.view];
+                [self.picker addChildViewController:controller];
+                [self.picker setNeedsStatusBarAppearanceUpdate];
+                [camera didMoveToParentViewController:self];
             } else {
                 if ([weakSelf.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
                     [weakSelf.picker.delegate assetsPickerController:self.picker didFinishPickingImage:image];
@@ -241,10 +271,6 @@
     
     self.switchButton.top = 5.0f;
     self.switchButton.right = self.view.width - 5.0f;
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-    return UIInterfaceOrientationPortrait;
 }
 
 @end

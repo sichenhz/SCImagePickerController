@@ -105,7 +105,7 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
         UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
                                                                            style:UIBarButtonItemStyleDone
                                                                           target:self.picker
-                                                                          action:@selector(finishPickingAssets:)];
+                                                                          action:@selector(finishPickingAssets)];
         doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
         
         self.badgeView = [[SCBadgeView alloc] init];
@@ -121,53 +121,6 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     
     // Begin caching assets in and around collection view's visible rect.
     [self updateCachedAssets];
-}
-
-#pragma mark - Asset Caching
-
-- (void)resetCachedAssets {
-    [self.imageManager stopCachingImagesForAllAssets];
-    self.previousPreheatRect = CGRectZero;
-}
-
-- (void)updateCachedAssets {
-    BOOL isViewVisible = [self isViewLoaded] && [[self view] window] != nil;
-    if (!isViewVisible) { return; }
-    
-    // The preheat window is twice the height of the visible rect
-    CGRect preheatRect = self.collectionView.bounds;
-    preheatRect = CGRectInset(preheatRect, 0.0f, -0.5f * CGRectGetHeight(preheatRect));
-    
-    // If scrolled by a "reasonable" amount...
-    CGFloat delta = ABS(CGRectGetMidY(preheatRect) - CGRectGetMidY(self.previousPreheatRect));
-    if (delta > CGRectGetHeight(self.collectionView.bounds) / 3.0f) {
-        
-        // Compute the assets to start caching and to stop caching.
-        NSMutableArray *addedIndexPaths = [NSMutableArray array];
-        NSMutableArray *removedIndexPaths = [NSMutableArray array];
-        
-        [self computeDifferenceBetweenRect:self.previousPreheatRect andRect:preheatRect removedHandler:^(CGRect removedRect) {
-            NSArray *indexPaths = [self.collectionView aapl_indexPathsForElementsInRect:removedRect];
-            [removedIndexPaths addObjectsFromArray:indexPaths];
-        } addedHandler:^(CGRect addedRect) {
-            NSArray *indexPaths = [self.collectionView aapl_indexPathsForElementsInRect:addedRect];
-            [addedIndexPaths addObjectsFromArray:indexPaths];
-        }];
-        
-        NSArray *assetsToStartCaching = [self assetsAtIndexPaths:addedIndexPaths];
-        NSArray *assetsToStopCaching = [self assetsAtIndexPaths:removedIndexPaths];
-        
-        [self.imageManager startCachingImagesForAssets:assetsToStartCaching
-                                            targetSize:AssetGridThumbnailSize
-                                           contentMode:PHImageContentModeAspectFill
-                                               options:nil];
-        [self.imageManager stopCachingImagesForAssets:assetsToStopCaching
-                                           targetSize:AssetGridThumbnailSize
-                                          contentMode:PHImageContentModeAspectFill
-                                              options:nil];
-        
-        self.previousPreheatRect = preheatRect;
-    }
 }
 
 #pragma mark - Private Method
@@ -217,6 +170,53 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     }
     
     return assets;
+}
+
+#pragma mark - Asset Caching
+
+- (void)resetCachedAssets {
+    [self.imageManager stopCachingImagesForAllAssets];
+    self.previousPreheatRect = CGRectZero;
+}
+
+- (void)updateCachedAssets {
+    BOOL isViewVisible = [self isViewLoaded] && [[self view] window] != nil;
+    if (!isViewVisible) { return; }
+    
+    // The preheat window is twice the height of the visible rect
+    CGRect preheatRect = self.collectionView.bounds;
+    preheatRect = CGRectInset(preheatRect, 0.0f, -0.5f * CGRectGetHeight(preheatRect));
+    
+    // If scrolled by a "reasonable" amount...
+    CGFloat delta = ABS(CGRectGetMidY(preheatRect) - CGRectGetMidY(self.previousPreheatRect));
+    if (delta > CGRectGetHeight(self.collectionView.bounds) / 3.0f) {
+        
+        // Compute the assets to start caching and to stop caching.
+        NSMutableArray *addedIndexPaths = [NSMutableArray array];
+        NSMutableArray *removedIndexPaths = [NSMutableArray array];
+        
+        [self computeDifferenceBetweenRect:self.previousPreheatRect andRect:preheatRect removedHandler:^(CGRect removedRect) {
+            NSArray *indexPaths = [self.collectionView aapl_indexPathsForElementsInRect:removedRect];
+            [removedIndexPaths addObjectsFromArray:indexPaths];
+        } addedHandler:^(CGRect addedRect) {
+            NSArray *indexPaths = [self.collectionView aapl_indexPathsForElementsInRect:addedRect];
+            [addedIndexPaths addObjectsFromArray:indexPaths];
+        }];
+        
+        NSArray *assetsToStartCaching = [self assetsAtIndexPaths:addedIndexPaths];
+        NSArray *assetsToStopCaching = [self assetsAtIndexPaths:removedIndexPaths];
+        
+        [self.imageManager startCachingImagesForAssets:assetsToStartCaching
+                                            targetSize:AssetGridThumbnailSize
+                                           contentMode:PHImageContentModeAspectFill
+                                               options:nil];
+        [self.imageManager stopCachingImagesForAssets:assetsToStopCaching
+                                           targetSize:AssetGridThumbnailSize
+                                          contentMode:PHImageContentModeAspectFill
+                                              options:nil];
+        
+        self.previousPreheatRect = preheatRect;
+    }
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -278,8 +278,8 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     } else {
         
         if (self.picker.maxMultipleCount > 0 && self.picker.maxMultipleCount == self.picker.selectedAssets.count) {
-            if ([self.picker.delegate respondsToSelector:@selector(assetsPickerVontrollerDidOverrunMaxMultipleCount:)]) {
-                [self.picker.delegate assetsPickerVontrollerDidOverrunMaxMultipleCount:self.picker];
+            if ([self.picker.delegate respondsToSelector:@selector(assetsPickerControllerDidOverrunMaxMultipleCount:)]) {
+                [self.picker.delegate assetsPickerControllerDidOverrunMaxMultipleCount:self.picker];
             }
             return NO;
         } else {
@@ -291,11 +291,34 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == 0) {
-        
-        if (self.picker.presentedViewController) {
-            [self.picker dismissViewControllerAnimated:YES completion:nil];
+
+        if (self.picker.childViewControllers.count == 2) {
+            SCCameraViewController *camera = self.picker.childViewControllers.lastObject;
+            [camera removeFromParentViewController];
+            [self.picker setNeedsStatusBarAppearanceUpdate];
+            [UIView animateWithDuration:0.3 animations:^{
+                CGRect frame = camera.view.frame;
+                frame.origin.y = frame.size.height;
+                camera.view.frame = frame;
+            } completion:^(BOOL finished) {
+                [camera.view removeFromSuperview];
+            }];
         } else {
-            [self.picker presentViewController:[[SCCameraViewController alloc] initWithPicker:self.picker] animated:YES completion:nil];
+            SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self.picker];
+            [camera willMoveToParentViewController:self.picker];
+            [camera.view setFrame:self.picker.view.frame];
+            __block CGRect frame = camera.view.frame;
+            frame.origin.y = frame.size.height;
+            camera.view.frame = frame;
+            [UIView animateWithDuration:0.3 animations:^{
+                frame.origin.y = 0;
+                camera.view.frame = frame;
+            } completion:^(BOOL finished) {
+                [self.picker setNeedsStatusBarAppearanceUpdate];
+            }];
+            [self.picker.view addSubview:camera.view];
+            [self.picker addChildViewController:camera];
+            [camera didMoveToParentViewController:self];
         }
         
     } else {

@@ -12,6 +12,9 @@
 
 + (CGSize)resizeForSend:(CGSize)size;
 
+- (UIImage *)crop:(CGRect)rect;
 - (UIImage *)crop:(CGRect)rect scale:(CGFloat)scale;
+
+- (UIImage *)fixOrientation;
 
 @end

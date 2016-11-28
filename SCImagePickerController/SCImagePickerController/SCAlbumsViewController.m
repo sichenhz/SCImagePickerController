@@ -48,7 +48,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消"
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self.picker
-                                                                            action:@selector(dismiss:)];
+                                                                            action:@selector(cancel)];
 
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status == PHAuthorizationStatusNotDetermined) {
@@ -134,7 +134,7 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
                                                                        style:UIBarButtonItemStyleDone
                                                                       target:self.picker
-                                                                      action:@selector(finishPickingAssets:)];
+                                                                      action:@selector(finishPickingAssets)];
     doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
     
     self.badgeView = [[SCBadgeView alloc] init];

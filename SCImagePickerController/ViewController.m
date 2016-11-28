@@ -42,7 +42,7 @@
 //    picker.maxMultipleCount = 10;
 
     picker.allowsEditing = YES;
-    picker.cropSize = CGSizeMake(750, 900);
+    picker.cropSize = CGSizeMake(750, 750);
     
     [self presentViewController:picker animated:YES completion:nil];
 
@@ -54,17 +54,18 @@
 #pragma mark - SCImagePickerControllerDelegate
 
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray *)assets {
-    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"当前选择图片集合 -> %@", assets);
 }
 
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingImage:(UIImage *)image {
-    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"当前编辑图片 -> %@", image);
     self.imageView.image = image;
 }
 
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"结束选择图片");
 }
 

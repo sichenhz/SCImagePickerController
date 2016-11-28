@@ -22,10 +22,15 @@
 
 @implementation SCImageClipViewController
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 #pragma mark - Life Cycle
 
-- (instancetype)initWithPicker:(SCImagePickerController *)picker {
+- (instancetype)initWithImage:(UIImage *)image picker:(SCImagePickerController *)picker {
     self.picker = picker;
+    self.image = image;
     self.cropSize = picker.cropSize;
     if (self = [super init]) {
     }
@@ -43,6 +48,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.view.backgroundColor = [UIColor blackColor];
     self.view.clipsToBounds = YES;
 
@@ -60,7 +66,7 @@
     self.imageView.clipsToBounds = YES;
     [self.scrollView addSubview:self.imageView];
     
-    if (self.picker) {
+    if (self.picker && !self.image) {
         PHAsset *asset = self.picker.selectedAssets.firstObject;
         [[PHCachingImageManager defaultManager] requestImageForAsset:asset
                                                           targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
@@ -73,7 +79,7 @@
                                                                [self configureImage:result];
                                                            }
                                                        }];
-    } else if (self.image) {
+    } else {
         [self configureImage:self.image];
     }
     
@@ -119,25 +125,30 @@
 
 #pragma mark - Action
 
-- (void)cancelButtonPressed:(id)sender {
+- (void)cancelButtonPressed:(UIButton *)button {
     if (self.picker) {
-        [self.picker.selectedAssets removeObjectAtIndex:0];
-        [self.navigationController popViewControllerAnimated:YES];
-    } else if (self.image) {
+        if (self.image) {
+            [self.view removeFromSuperview];
+            [self removeFromParentViewController];
+            [self.picker setNeedsStatusBarAppearanceUpdate];
+        } else {
+            [self.picker.selectedAssets removeObjectAtIndex:0];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    } else {
         if ([self.delegate respondsToSelector:@selector(clipViewControllerDidCancel:)]) {
             [self.delegate clipViewControllerDidCancel:self];
         }
     }
 }
 
-- (void)selectButtonPressed:(id)sender {
+- (void)selectButtonPressed:(UIButton *)button {
+    UIImage *image = [self clibImage:self.imageView.image];
     if (self.picker) {
-        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
-            [self.picker.delegate assetsPickerController:self.picker didFinishPickingImage:[self clibImage:self.imageView.image]];
-        }
-    } else if (self.image) {
+        [self.picker finishPickingImage:image];
+    } else {
         if ([self.delegate respondsToSelector:@selector(clipViewController:didFinishClipImage:)]) {
-            [self.delegate clipViewController:self didFinishClipImage:[self clibImage:self.imageView.image]];
+            [self.delegate clipViewController:self didFinishClipImage:image];
         }
     }
 }

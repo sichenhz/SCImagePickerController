@@ -12,7 +12,26 @@
 #import "SCCameraViewController.h"
 #import "SCBadgeView.h"
 
+@interface SCImagePickerController()
+
+@property (nonatomic, strong) UINavigationController *navigationController;
+
+@end
+
 @implementation SCImagePickerController
+
+- (BOOL)prefersStatusBarHidden {
+    UIViewController *lastController = self.childViewControllers.lastObject;
+    if ([lastController isKindOfClass:[SCImageClipViewController class]] ||
+        [lastController isKindOfClass:[SCCameraViewController class]]) {
+        return YES;
+    } else if (([lastController isKindOfClass:[UINavigationController class]] &&
+                [[(UINavigationController *)lastController topViewController] isKindOfClass:[SCImageClipViewController class]])) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
 
 #pragma mark - Life Cycle
 
@@ -30,8 +49,11 @@
     if (self.sourceType == SCImagePickerControllerSourceTypeCamera) {
         
         SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
+        [camera willMoveToParentViewController:self];
+        [camera.view setFrame:self.view.frame];
         [self.view addSubview:camera.view];
         [self addChildViewController:camera];
+        [camera didMoveToParentViewController:self];
 
     } else {
         
@@ -67,10 +89,10 @@
         [self updateDoneButton];
     } else {
         if (self.allowsEditing) {
-            SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithPicker:self];
+            SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithImage:nil picker:self];
             [self.navigationController pushViewController:controller animated:YES];
         } else {
-            [self finishPickingAssets:self];
+            [self finishPickingAssets];
         }
     }
 }
@@ -80,21 +102,25 @@
     [self updateDoneButton];
 }
 
-- (void)finishPickingAssets:(id)sender {
+#pragma mark - Private Method
+
+- (void)finishPickingAssets {
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
     }
 }
 
-- (void)dismiss:(id)sender {
+- (void)finishPickingImage:(UIImage *)image {
+    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
+        [self.delegate assetsPickerController:self didFinishPickingImage:image];
+    }
+}
+
+- (void)cancel {
     if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
         [self.delegate assetsPickerControllerDidCancel:self];
     }
-    
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
-
-#pragma mark - Private Method
 
 - (void)updateDoneButton {
     UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];

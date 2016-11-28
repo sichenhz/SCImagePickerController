@@ -7,23 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2528807D1DE6C50A0039FFBD /* SCCameraController+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880581DE6C50A0039FFBD /* SCCameraController+Helper.m */; };
-		2528807E1DE6C50A0039FFBD /* SCCameraController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528805A1DE6C50A0039FFBD /* SCCameraController.m */; };
-		2528807F1DE6C50A0039FFBD /* SCCameraViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528805C1DE6C50A0039FFBD /* SCCameraViewCell.m */; };
-		252880801DE6C50A0039FFBD /* SCCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528805E1DE6C50A0039FFBD /* SCCameraViewController.m */; };
-		252880811DE6C50A0039FFBD /* UIImage+Crop.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880601DE6C50A0039FFBD /* UIImage+Crop.m */; };
-		252880821DE6C50A0039FFBD /* UIImage+FixOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880621DE6C50A0039FFBD /* UIImage+FixOrientation.m */; };
-		252880831DE6C50A0039FFBD /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880641DE6C50A0039FFBD /* UIImage+Resize.m */; };
-		252880851DE6C50A0039FFBD /* ViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880681DE6C50A0039FFBD /* ViewUtils.m */; };
-		252880861DE6C50A0039FFBD /* SCAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528806B1DE6C50A0039FFBD /* SCAlbumsViewCell.m */; };
-		252880871DE6C50A0039FFBD /* SCAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528806D1DE6C50A0039FFBD /* SCAlbumsViewController.m */; };
-		252880881DE6C50A0039FFBD /* SCBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528806F1DE6C50A0039FFBD /* SCBadgeView.m */; };
-		252880891DE6C50A0039FFBD /* SCGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880711DE6C50A0039FFBD /* SCGridViewCell.m */; };
-		2528808A1DE6C50A0039FFBD /* SCGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880731DE6C50A0039FFBD /* SCGridViewController.m */; };
-		2528808B1DE6C50A0039FFBD /* SCGridViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880751DE6C50A0039FFBD /* SCGridViewFlowLayout.m */; };
-		2528808C1DE6C50A0039FFBD /* SCImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880771DE6C50A0039FFBD /* SCImageClipViewController.m */; };
-		2528808D1DE6C50A0039FFBD /* SCImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 252880791DE6C50A0039FFBD /* SCImagePickerController.m */; };
-		2528808E1DE6C50A0039FFBD /* UIImage+SCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2528807B1DE6C50A0039FFBD /* UIImage+SCHelper.m */; };
+		25CA290A1DEC4B5800313F42 /* SCCameraController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F11DEC4B5800313F42 /* SCCameraController.m */; };
+		25CA290C1DEC4B5800313F42 /* SCCameraViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */; };
+		25CA290D1DEC4B5800313F42 /* SCCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */; };
+		25CA290E1DEC4B5800313F42 /* SCGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F81DEC4B5800313F42 /* SCGridViewController.m */; };
+		25CA290F1DEC4B5800313F42 /* SCImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */; };
+		25CA29101DEC4B5800313F42 /* SCAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28FB1DEC4B5800313F42 /* SCAlbumsViewCell.m */; };
+		25CA29111DEC4B5800313F42 /* SCAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28FD1DEC4B5800313F42 /* SCAlbumsViewController.m */; };
+		25CA29121DEC4B5800313F42 /* SCBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28FF1DEC4B5800313F42 /* SCBadgeView.m */; };
+		25CA29131DEC4B5800313F42 /* SCGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29011DEC4B5800313F42 /* SCGridViewCell.m */; };
+		25CA29141DEC4B5800313F42 /* SCImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29051DEC4B5800313F42 /* SCImagePickerController.m */; };
+		25CA29151DEC4B5800313F42 /* UIImage+SCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */; };
+		25CA29161DEC4B5800313F42 /* ViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29091DEC4B5800313F42 /* ViewUtils.m */; };
 		25FE673A1CEEB5FC0033483B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE67391CEEB5FC0033483B /* main.m */; };
 		25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673C1CEEB5FC0033483B /* AppDelegate.m */; };
 		25FE67401CEEB5FC0033483B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673F1CEEB5FC0033483B /* ViewController.m */; };
@@ -34,40 +29,30 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		252880571DE6C50A0039FFBD /* SCCameraController+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SCCameraController+Helper.h"; sourceTree = "<group>"; };
-		252880581DE6C50A0039FFBD /* SCCameraController+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SCCameraController+Helper.m"; sourceTree = "<group>"; };
-		252880591DE6C50A0039FFBD /* SCCameraController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraController.h; sourceTree = "<group>"; };
-		2528805A1DE6C50A0039FFBD /* SCCameraController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraController.m; sourceTree = "<group>"; };
-		2528805B1DE6C50A0039FFBD /* SCCameraViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewCell.h; sourceTree = "<group>"; };
-		2528805C1DE6C50A0039FFBD /* SCCameraViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewCell.m; sourceTree = "<group>"; };
-		2528805D1DE6C50A0039FFBD /* SCCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewController.h; sourceTree = "<group>"; };
-		2528805E1DE6C50A0039FFBD /* SCCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewController.m; sourceTree = "<group>"; };
-		2528805F1DE6C50A0039FFBD /* UIImage+Crop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Crop.h"; sourceTree = "<group>"; };
-		252880601DE6C50A0039FFBD /* UIImage+Crop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Crop.m"; sourceTree = "<group>"; };
-		252880611DE6C50A0039FFBD /* UIImage+FixOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FixOrientation.h"; sourceTree = "<group>"; };
-		252880621DE6C50A0039FFBD /* UIImage+FixOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FixOrientation.m"; sourceTree = "<group>"; };
-		252880631DE6C50A0039FFBD /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
-		252880641DE6C50A0039FFBD /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
-		252880671DE6C50A0039FFBD /* ViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewUtils.h; sourceTree = "<group>"; };
-		252880681DE6C50A0039FFBD /* ViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewUtils.m; sourceTree = "<group>"; };
-		2528806A1DE6C50A0039FFBD /* SCAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlbumsViewCell.h; sourceTree = "<group>"; };
-		2528806B1DE6C50A0039FFBD /* SCAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAlbumsViewCell.m; sourceTree = "<group>"; };
-		2528806C1DE6C50A0039FFBD /* SCAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlbumsViewController.h; sourceTree = "<group>"; };
-		2528806D1DE6C50A0039FFBD /* SCAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAlbumsViewController.m; sourceTree = "<group>"; };
-		2528806E1DE6C50A0039FFBD /* SCBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCBadgeView.h; sourceTree = "<group>"; };
-		2528806F1DE6C50A0039FFBD /* SCBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCBadgeView.m; sourceTree = "<group>"; };
-		252880701DE6C50A0039FFBD /* SCGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCGridViewCell.h; sourceTree = "<group>"; };
-		252880711DE6C50A0039FFBD /* SCGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewCell.m; sourceTree = "<group>"; };
-		252880721DE6C50A0039FFBD /* SCGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCGridViewController.h; sourceTree = "<group>"; };
-		252880731DE6C50A0039FFBD /* SCGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewController.m; sourceTree = "<group>"; };
-		252880741DE6C50A0039FFBD /* SCGridViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCGridViewFlowLayout.h; sourceTree = "<group>"; };
-		252880751DE6C50A0039FFBD /* SCGridViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewFlowLayout.m; sourceTree = "<group>"; };
-		252880761DE6C50A0039FFBD /* SCImageClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImageClipViewController.h; sourceTree = "<group>"; };
-		252880771DE6C50A0039FFBD /* SCImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImageClipViewController.m; sourceTree = "<group>"; };
-		252880781DE6C50A0039FFBD /* SCImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImagePickerController.h; sourceTree = "<group>"; };
-		252880791DE6C50A0039FFBD /* SCImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImagePickerController.m; sourceTree = "<group>"; };
-		2528807A1DE6C50A0039FFBD /* UIImage+SCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SCHelper.h"; sourceTree = "<group>"; };
-		2528807B1DE6C50A0039FFBD /* UIImage+SCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SCHelper.m"; sourceTree = "<group>"; };
+		25CA28F01DEC4B5800313F42 /* SCCameraController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraController.h; sourceTree = "<group>"; };
+		25CA28F11DEC4B5800313F42 /* SCCameraController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraController.m; sourceTree = "<group>"; };
+		25CA28F41DEC4B5800313F42 /* SCCameraViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewCell.h; sourceTree = "<group>"; };
+		25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewCell.m; sourceTree = "<group>"; };
+		25CA28F61DEC4B5800313F42 /* SCCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewController.h; sourceTree = "<group>"; };
+		25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewController.m; sourceTree = "<group>"; };
+		25CA28F81DEC4B5800313F42 /* SCGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewController.m; sourceTree = "<group>"; };
+		25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImageClipViewController.m; sourceTree = "<group>"; };
+		25CA28FA1DEC4B5800313F42 /* SCAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlbumsViewCell.h; sourceTree = "<group>"; };
+		25CA28FB1DEC4B5800313F42 /* SCAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAlbumsViewCell.m; sourceTree = "<group>"; };
+		25CA28FC1DEC4B5800313F42 /* SCAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlbumsViewController.h; sourceTree = "<group>"; };
+		25CA28FD1DEC4B5800313F42 /* SCAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAlbumsViewController.m; sourceTree = "<group>"; };
+		25CA28FE1DEC4B5800313F42 /* SCBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCBadgeView.h; sourceTree = "<group>"; };
+		25CA28FF1DEC4B5800313F42 /* SCBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCBadgeView.m; sourceTree = "<group>"; };
+		25CA29001DEC4B5800313F42 /* SCGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCGridViewCell.h; sourceTree = "<group>"; };
+		25CA29011DEC4B5800313F42 /* SCGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewCell.m; sourceTree = "<group>"; };
+		25CA29021DEC4B5800313F42 /* SCGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCGridViewController.h; sourceTree = "<group>"; };
+		25CA29031DEC4B5800313F42 /* SCImageClipViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImageClipViewController.h; sourceTree = "<group>"; };
+		25CA29041DEC4B5800313F42 /* SCImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCImagePickerController.h; sourceTree = "<group>"; };
+		25CA29051DEC4B5800313F42 /* SCImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImagePickerController.m; sourceTree = "<group>"; };
+		25CA29061DEC4B5800313F42 /* UIImage+SCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SCHelper.h"; sourceTree = "<group>"; };
+		25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SCHelper.m"; sourceTree = "<group>"; };
+		25CA29081DEC4B5800313F42 /* ViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewUtils.h; sourceTree = "<group>"; };
+		25CA29091DEC4B5800313F42 /* ViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewUtils.m; sourceTree = "<group>"; };
 		25FE67351CEEB5FC0033483B /* SCImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SCImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25FE67391CEEB5FC0033483B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		25FE673B1CEEB5FC0033483B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -92,54 +77,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		252880541DE6C50A0039FFBD /* Camera */ = {
-			isa = PBXGroup;
-			children = (
-				2528805D1DE6C50A0039FFBD /* SCCameraViewController.h */,
-				2528805E1DE6C50A0039FFBD /* SCCameraViewController.m */,
-				252880591DE6C50A0039FFBD /* SCCameraController.h */,
-				2528805A1DE6C50A0039FFBD /* SCCameraController.m */,
-				2528805B1DE6C50A0039FFBD /* SCCameraViewCell.h */,
-				2528805C1DE6C50A0039FFBD /* SCCameraViewCell.m */,
-				252880571DE6C50A0039FFBD /* SCCameraController+Helper.h */,
-				252880581DE6C50A0039FFBD /* SCCameraController+Helper.m */,
-				252880671DE6C50A0039FFBD /* ViewUtils.h */,
-				252880681DE6C50A0039FFBD /* ViewUtils.m */,
-				2528805F1DE6C50A0039FFBD /* UIImage+Crop.h */,
-				252880601DE6C50A0039FFBD /* UIImage+Crop.m */,
-				252880611DE6C50A0039FFBD /* UIImage+FixOrientation.h */,
-				252880621DE6C50A0039FFBD /* UIImage+FixOrientation.m */,
-				252880631DE6C50A0039FFBD /* UIImage+Resize.h */,
-				252880641DE6C50A0039FFBD /* UIImage+Resize.m */,
-			);
-			path = Camera;
-			sourceTree = "<group>";
-		};
-		252880691DE6C50A0039FFBD /* Photo */ = {
-			isa = PBXGroup;
-			children = (
-				252880781DE6C50A0039FFBD /* SCImagePickerController.h */,
-				252880791DE6C50A0039FFBD /* SCImagePickerController.m */,
-				2528806C1DE6C50A0039FFBD /* SCAlbumsViewController.h */,
-				2528806D1DE6C50A0039FFBD /* SCAlbumsViewController.m */,
-				252880721DE6C50A0039FFBD /* SCGridViewController.h */,
-				252880731DE6C50A0039FFBD /* SCGridViewController.m */,
-				252880761DE6C50A0039FFBD /* SCImageClipViewController.h */,
-				252880771DE6C50A0039FFBD /* SCImageClipViewController.m */,
-				2528806A1DE6C50A0039FFBD /* SCAlbumsViewCell.h */,
-				2528806B1DE6C50A0039FFBD /* SCAlbumsViewCell.m */,
-				252880701DE6C50A0039FFBD /* SCGridViewCell.h */,
-				252880711DE6C50A0039FFBD /* SCGridViewCell.m */,
-				2528806E1DE6C50A0039FFBD /* SCBadgeView.h */,
-				2528806F1DE6C50A0039FFBD /* SCBadgeView.m */,
-				252880741DE6C50A0039FFBD /* SCGridViewFlowLayout.h */,
-				252880751DE6C50A0039FFBD /* SCGridViewFlowLayout.m */,
-				2528807A1DE6C50A0039FFBD /* UIImage+SCHelper.h */,
-				2528807B1DE6C50A0039FFBD /* UIImage+SCHelper.m */,
-			);
-			path = Photo;
-			sourceTree = "<group>";
-		};
 		25FE672C1CEEB5FC0033483B = {
 			isa = PBXGroup;
 			children = (
@@ -185,8 +122,30 @@
 		25FE674F1CEEB6180033483B /* SCImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
-				252880691DE6C50A0039FFBD /* Photo */,
-				252880541DE6C50A0039FFBD /* Camera */,
+				25CA29041DEC4B5800313F42 /* SCImagePickerController.h */,
+				25CA29051DEC4B5800313F42 /* SCImagePickerController.m */,
+				25CA28FC1DEC4B5800313F42 /* SCAlbumsViewController.h */,
+				25CA28FD1DEC4B5800313F42 /* SCAlbumsViewController.m */,
+				25CA29021DEC4B5800313F42 /* SCGridViewController.h */,
+				25CA28F81DEC4B5800313F42 /* SCGridViewController.m */,
+				25CA29031DEC4B5800313F42 /* SCImageClipViewController.h */,
+				25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */,
+				25CA28F61DEC4B5800313F42 /* SCCameraViewController.h */,
+				25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */,
+				25CA28F01DEC4B5800313F42 /* SCCameraController.h */,
+				25CA28F11DEC4B5800313F42 /* SCCameraController.m */,
+				25CA28F41DEC4B5800313F42 /* SCCameraViewCell.h */,
+				25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */,
+				25CA28FA1DEC4B5800313F42 /* SCAlbumsViewCell.h */,
+				25CA28FB1DEC4B5800313F42 /* SCAlbumsViewCell.m */,
+				25CA28FE1DEC4B5800313F42 /* SCBadgeView.h */,
+				25CA28FF1DEC4B5800313F42 /* SCBadgeView.m */,
+				25CA29001DEC4B5800313F42 /* SCGridViewCell.h */,
+				25CA29011DEC4B5800313F42 /* SCGridViewCell.m */,
+				25CA29061DEC4B5800313F42 /* UIImage+SCHelper.h */,
+				25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */,
+				25CA29081DEC4B5800313F42 /* ViewUtils.h */,
+				25CA29091DEC4B5800313F42 /* ViewUtils.m */,
 			);
 			path = SCImagePickerController;
 			sourceTree = "<group>";
@@ -263,26 +222,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				252880861DE6C50A0039FFBD /* SCAlbumsViewCell.m in Sources */,
-				252880811DE6C50A0039FFBD /* UIImage+Crop.m in Sources */,
-				252880891DE6C50A0039FFBD /* SCGridViewCell.m in Sources */,
-				2528808B1DE6C50A0039FFBD /* SCGridViewFlowLayout.m in Sources */,
+				25CA290F1DEC4B5800313F42 /* SCImageClipViewController.m in Sources */,
 				25FE67401CEEB5FC0033483B /* ViewController.m in Sources */,
-				252880871DE6C50A0039FFBD /* SCAlbumsViewController.m in Sources */,
-				252880801DE6C50A0039FFBD /* SCCameraViewController.m in Sources */,
-				252880851DE6C50A0039FFBD /* ViewUtils.m in Sources */,
-				2528807D1DE6C50A0039FFBD /* SCCameraController+Helper.m in Sources */,
-				2528807E1DE6C50A0039FFBD /* SCCameraController.m in Sources */,
-				2528808A1DE6C50A0039FFBD /* SCGridViewController.m in Sources */,
+				25CA29161DEC4B5800313F42 /* ViewUtils.m in Sources */,
+				25CA290D1DEC4B5800313F42 /* SCCameraViewController.m in Sources */,
+				25CA29121DEC4B5800313F42 /* SCBadgeView.m in Sources */,
+				25CA29101DEC4B5800313F42 /* SCAlbumsViewCell.m in Sources */,
 				25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */,
-				2528808D1DE6C50A0039FFBD /* SCImagePickerController.m in Sources */,
-				2528807F1DE6C50A0039FFBD /* SCCameraViewCell.m in Sources */,
-				2528808E1DE6C50A0039FFBD /* UIImage+SCHelper.m in Sources */,
-				2528808C1DE6C50A0039FFBD /* SCImageClipViewController.m in Sources */,
-				252880881DE6C50A0039FFBD /* SCBadgeView.m in Sources */,
-				252880831DE6C50A0039FFBD /* UIImage+Resize.m in Sources */,
-				252880821DE6C50A0039FFBD /* UIImage+FixOrientation.m in Sources */,
+				25CA290E1DEC4B5800313F42 /* SCGridViewController.m in Sources */,
+				25CA29131DEC4B5800313F42 /* SCGridViewCell.m in Sources */,
+				25CA290C1DEC4B5800313F42 /* SCCameraViewCell.m in Sources */,
+				25CA290A1DEC4B5800313F42 /* SCCameraController.m in Sources */,
 				25FE673A1CEEB5FC0033483B /* main.m in Sources */,
+				25CA29111DEC4B5800313F42 /* SCAlbumsViewController.m in Sources */,
+				25CA29151DEC4B5800313F42 /* UIImage+SCHelper.m in Sources */,
+				25CA29141DEC4B5800313F42 /* SCImagePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
