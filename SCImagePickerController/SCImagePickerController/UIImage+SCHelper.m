@@ -10,7 +10,7 @@
 
 @implementation UIImage (SCHelper)
 
-+ (CGSize)resizeForSend:(CGSize)size {
++ (CGSize)sc_resizeForSend:(CGSize)size {
     
     CGSize targetSize = size;
     
@@ -47,11 +47,7 @@
     return targetSize;
 }
 
-- (UIImage *)crop:(CGRect)rect {
-    return [self crop:rect scale:self.scale];
-}
-
-- (UIImage*)crop:(CGRect)rect scale:(CGFloat)scale {
+- (UIImage*)sc_crop:(CGRect)rect scale:(CGFloat)scale {
     CGPoint origin = CGPointMake(-rect.origin.x, -rect.origin.y);
     UIImage *result = nil;
     UIGraphicsBeginImageContext(CGSizeMake(rect.size.width, rect.size.height));
@@ -62,7 +58,7 @@
 }
 
 // http://stackoverflow.com/questions/5427656/ios-uiimagepickercontroller-result-image-orientation-after-upload
-- (UIImage *)fixOrientation {
+- (UIImage *)sc_fixOrientation {
     
     // No-op if the orientation is already correct
     if (self.imageOrientation == UIImageOrientationUp) return self;

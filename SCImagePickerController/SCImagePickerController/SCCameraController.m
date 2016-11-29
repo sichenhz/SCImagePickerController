@@ -419,7 +419,7 @@ NSString *const SCCameraErrorDomain = @"SCCameraErrorDomain";
             }
             
             if (self.fixOrientationAfterCapture) {
-                image = [image fixOrientation];
+                image = [image sc_fixOrientation];
             }
         }
         

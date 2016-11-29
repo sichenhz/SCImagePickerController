@@ -194,7 +194,7 @@
     CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale] * scrollViewScale,
                                         offset.y * [[UIScreen mainScreen] scale] * scrollViewScale);
     CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.cropSize.width, self.cropSize.height);
-    UIImage *resultImage = [image crop:cropRect scale:orignalScale];
+    UIImage *resultImage = [image sc_crop:cropRect scale:orignalScale];
     return resultImage;
 }
 

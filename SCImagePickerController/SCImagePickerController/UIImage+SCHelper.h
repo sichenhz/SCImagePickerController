@@ -10,11 +10,10 @@
 
 @interface UIImage (SCHelper)
 
-+ (CGSize)resizeForSend:(CGSize)size;
++ (CGSize)sc_resizeForSend:(CGSize)size;
 
-- (UIImage *)crop:(CGRect)rect;
-- (UIImage *)crop:(CGRect)rect scale:(CGFloat)scale;
+- (UIImage *)sc_crop:(CGRect)rect scale:(CGFloat)scale;
 
-- (UIImage *)fixOrientation;
+- (UIImage *)sc_fixOrientation;
 
 @end

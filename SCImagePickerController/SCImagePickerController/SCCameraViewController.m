@@ -8,7 +8,6 @@
 
 #import "SCCameraViewController.h"
 #import "SCCameraController.h"
-#import "ViewUtils.h"
 #import "SCImagePickerController.h"
 #import "SCImageClipViewController.h"
 
@@ -52,27 +51,6 @@
     [super viewWillAppear:animated];
     
     [self.camera start];
-}
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-    self.camera.view.frame = self.view.contentBounds;
-    
-    self.snapButton.center = self.view.contentCenter;
-    self.snapButton.bottom = self.view.height - 15.0f;
-    
-    self.flashButton.center = self.view.contentCenter;
-    self.flashButton.top = 5.0f;
-    
-    self.switchButton.top = 5.0f;
-    self.switchButton.right = self.view.width - 5.0f;
-    
-    self.albumsButton.bottom = self.view.height - 15.0f;
-    self.albumsButton.right = self.view.width - 5.0f;
-    
-    self.cancelButton.bottom = self.view.height - 15.0f;
-    self.cancelButton.left = 5.0f;
 }
 
 #pragma mark - Private Method
@@ -148,9 +126,9 @@
 
     // snap button
     self.snapButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.snapButton.frame = CGRectMake(0, 0, 70.0f, 70.0f);
+    self.snapButton.frame = CGRectMake((screenRect.size.width - 70.0f) / 2, screenRect.size.height - 85.0f, 70.0f, 70.0f);
     self.snapButton.clipsToBounds = YES;
-    self.snapButton.layer.cornerRadius = self.snapButton.width / 2.0f;
+    self.snapButton.layer.cornerRadius = self.snapButton.frame.size.width / 2.0f;
     self.snapButton.layer.borderColor = [UIColor whiteColor].CGColor;
     self.snapButton.layer.borderWidth = 2.0f;
     self.snapButton.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
@@ -161,7 +139,7 @@
     
     // flash button
     self.flashButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    self.flashButton.frame = CGRectMake(0, 0, 16.0f + 20.0f, 24.0f + 20.0f);
+    self.flashButton.frame = CGRectMake((screenRect.size.width - 36.0f) / 2, 5.0f, 36.0f, 44.0f);
     self.flashButton.tintColor = [UIColor whiteColor];
     [self.flashButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"camera-flash.png"]] forState:UIControlStateNormal];
     self.flashButton.imageEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f);
@@ -171,7 +149,7 @@
     // switch button
     if ([SCCameraController isFrontCameraAvailable] && [SCCameraController isRearCameraAvailable]) {
         self.switchButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        self.switchButton.frame = CGRectMake(0, 0, 29.0f + 20.0f, 22.0f + 20.0f);
+        self.switchButton.frame = CGRectMake(screenRect.size.width - 54.0f, 5.0f, 49.0f, 42.0f);
         self.switchButton.tintColor = [UIColor whiteColor];
         [self.switchButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"camera-switch.png"]] forState:UIControlStateNormal];
         self.switchButton.imageEdgeInsets = UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f);

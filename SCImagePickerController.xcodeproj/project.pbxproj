@@ -18,7 +18,6 @@
 		25CA29131DEC4B5800313F42 /* SCGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29011DEC4B5800313F42 /* SCGridViewCell.m */; };
 		25CA29141DEC4B5800313F42 /* SCImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29051DEC4B5800313F42 /* SCImagePickerController.m */; };
 		25CA29151DEC4B5800313F42 /* UIImage+SCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */; };
-		25CA29161DEC4B5800313F42 /* ViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA29091DEC4B5800313F42 /* ViewUtils.m */; };
 		25FE673A1CEEB5FC0033483B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE67391CEEB5FC0033483B /* main.m */; };
 		25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673C1CEEB5FC0033483B /* AppDelegate.m */; };
 		25FE67401CEEB5FC0033483B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FE673F1CEEB5FC0033483B /* ViewController.m */; };
@@ -51,8 +50,6 @@
 		25CA29051DEC4B5800313F42 /* SCImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImagePickerController.m; sourceTree = "<group>"; };
 		25CA29061DEC4B5800313F42 /* UIImage+SCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+SCHelper.h"; sourceTree = "<group>"; };
 		25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+SCHelper.m"; sourceTree = "<group>"; };
-		25CA29081DEC4B5800313F42 /* ViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewUtils.h; sourceTree = "<group>"; };
-		25CA29091DEC4B5800313F42 /* ViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewUtils.m; sourceTree = "<group>"; };
 		25FE67351CEEB5FC0033483B /* SCImagePickerController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SCImagePickerController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25FE67391CEEB5FC0033483B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		25FE673B1CEEB5FC0033483B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -144,8 +141,6 @@
 				25CA29011DEC4B5800313F42 /* SCGridViewCell.m */,
 				25CA29061DEC4B5800313F42 /* UIImage+SCHelper.h */,
 				25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */,
-				25CA29081DEC4B5800313F42 /* ViewUtils.h */,
-				25CA29091DEC4B5800313F42 /* ViewUtils.m */,
 			);
 			path = SCImagePickerController;
 			sourceTree = "<group>";
@@ -224,7 +219,6 @@
 			files = (
 				25CA290F1DEC4B5800313F42 /* SCImageClipViewController.m in Sources */,
 				25FE67401CEEB5FC0033483B /* ViewController.m in Sources */,
-				25CA29161DEC4B5800313F42 /* ViewUtils.m in Sources */,
 				25CA290D1DEC4B5800313F42 /* SCCameraViewController.m in Sources */,
 				25CA29121DEC4B5800313F42 /* SCBadgeView.m in Sources */,
 				25CA29101DEC4B5800313F42 /* SCAlbumsViewCell.m in Sources */,
