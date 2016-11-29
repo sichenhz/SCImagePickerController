@@ -22,10 +22,6 @@
 
 @implementation SCImageClipViewController
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
 #pragma mark - Life Cycle
 
 - (instancetype)initWithImage:(UIImage *)image picker:(SCImagePickerController *)picker {

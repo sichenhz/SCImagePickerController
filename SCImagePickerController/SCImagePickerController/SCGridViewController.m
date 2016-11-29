@@ -306,7 +306,7 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
         } else {
             SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self.picker];
             [camera willMoveToParentViewController:self.picker];
-            [camera.view setFrame:self.picker.view.frame];
+            camera.view.frame = self.picker.view.frame;
             __block CGRect frame = camera.view.frame;
             frame.origin.y = frame.size.height;
             camera.view.frame = frame;

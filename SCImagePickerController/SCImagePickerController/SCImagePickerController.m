@@ -50,7 +50,7 @@
         
         SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
         [camera willMoveToParentViewController:self];
-        [camera.view setFrame:self.view.frame];
+        camera.view.frame = self.view.frame;
         [self.view addSubview:camera.view];
         [self addChildViewController:camera];
         [camera didMoveToParentViewController:self];
@@ -58,7 +58,7 @@
     } else {
         
         [self.navigationController willMoveToParentViewController:self];
-        [self.navigationController.view setFrame:self.view.frame];
+        self.navigationController.view.frame = self.view.frame;
         [self.view addSubview:self.navigationController.view];
         [self addChildViewController:self.navigationController];
         [self.navigationController didMoveToParentViewController:self];

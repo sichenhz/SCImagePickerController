@@ -18,7 +18,7 @@
     CGPoint pointOfInterest = CGPointMake(.5f, .5f);
     CGSize frameSize = previewLayer.frame.size;
     
-    if ( [previewLayer.videoGravity isEqualToString:AVLayerVideoGravityResize] ) {
+    if ([previewLayer.videoGravity isEqualToString:AVLayerVideoGravityResize]) {
         pointOfInterest = CGPointMake(viewCoordinates.y / frameSize.height, 1.f - (viewCoordinates.x / frameSize.width));
     } else {
         CGRect cleanAperture;
@@ -93,7 +93,7 @@
 
 @end
 
-@interface SCCameraController () <AVCaptureFileOutputRecordingDelegate, UIGestureRecognizerDelegate>
+@interface SCCameraController () <UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) UIView *preview;
 @property (strong, nonatomic) AVCaptureStillImageOutput *stillImageOutput;
@@ -106,69 +106,48 @@
 @property (strong, nonatomic) UITapGestureRecognizer *tapGesture;
 @property (strong, nonatomic) CALayer *focusBoxLayer;
 @property (strong, nonatomic) CAAnimation *focusBoxAnimation;
-@property (strong, nonatomic) AVCaptureMovieFileOutput *movieFileOutput;
 @property (strong, nonatomic) UIPinchGestureRecognizer *pinchGesture;
 @property (nonatomic, assign) CGFloat beginGestureScale;
 @property (nonatomic, assign) CGFloat effectiveScale;
-@property (nonatomic, copy) void (^didRecordCompletionBlock)(SCCameraController *camera, NSURL *outputFileUrl, NSError *error);
 
 @end
 
-NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDomain";
+NSString *const SCCameraErrorDomain = @"SCCameraErrorDomain";
 
 @implementation SCCameraController
 
 #pragma mark - Initialize
 
-- (instancetype)init
-{
-    return [self initWithVideoEnabled:NO];
+- (instancetype)init {
+    return [self initWithQuality:AVCaptureSessionPresetHigh position:SCCameraPositionRear];
 }
 
-- (instancetype)initWithVideoEnabled:(BOOL)videoEnabled
-{
-    return [self initWithQuality:AVCaptureSessionPresetHigh position:LLCameraPositionRear videoEnabled:videoEnabled];
-}
-
-- (instancetype)initWithQuality:(NSString *)quality position:(LLCameraPosition)position videoEnabled:(BOOL)videoEnabled
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if(self) {
-        [self setupWithQuality:quality position:position videoEnabled:videoEnabled];
+- (instancetype)initWithQuality:(NSString *)quality position:(SCCameraPosition)position {
+    if (self = [super initWithNibName:nil bundle:nil]) {
+        [self setupWithQuality:quality position:position];
     }
-    
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        [self setupWithQuality:AVCaptureSessionPresetHigh
-                      position:LLCameraPositionRear
-                  videoEnabled:YES];
+        [self setupWithQuality:AVCaptureSessionPresetHigh position:SCCameraPositionRear];
     }
     return self;
 }
 
-- (void)setupWithQuality:(NSString *)quality
-                position:(LLCameraPosition)position
-            videoEnabled:(BOOL)videoEnabled
-{
+- (void)setupWithQuality:(NSString *)quality position:(SCCameraPosition)position {
     _cameraQuality = quality;
     _position = position;
     _fixOrientationAfterCapture = NO;
     _tapToFocus = YES;
     _useDeviceOrientation = NO;
-    _flash = LLCameraFlashOff;
-    _mirror = LLCameraMirrorAuto;
-    _videoEnabled = videoEnabled;
-    _recording = NO;
+    _flash = SCCameraFlashOff;
     _zoomingEnabled = YES;
     _effectiveScale = 1.0f;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor clearColor];
@@ -184,8 +163,8 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self.tapGesture setDelaysTouchesEnded:NO];
     [self.preview addGestureRecognizer:self.tapGesture];
     
-    //pinch to zoom
-    if (_zoomingEnabled) {
+    // pinch to zoom
+    if (self.isZoomingEnabled) {
         self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
         self.pinchGesture.delegate = self;
         [self.preview addGestureRecognizer:self.pinchGesture];
@@ -195,21 +174,44 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self addDefaultFocusBox];
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+    self.preview.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    
+    CGRect bounds = self.preview.bounds;
+    self.captureVideoPreviewLayer.bounds = bounds;
+    self.captureVideoPreviewLayer.position = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
+    
+    self.captureVideoPreviewLayer.connection.videoOrientation = [self orientationForConnection];
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    
+    // layout subviews is not called when rotating from landscape right/left to left/right
+    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
+        [self.view setNeedsLayout];
+    }
+}
+
+- (void)dealloc {
+    [self stop];
+}
+
 #pragma mark Pinch Delegate
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-    if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
         _beginGestureScale = _effectiveScale;
     }
     return YES;
 }
 
-- (void)handlePinchGesture:(UIPinchGestureRecognizer *)recognizer
-{
+- (void)handlePinchGesture:(UIPinchGestureRecognizer *)recognizer {
     BOOL allTouchesAreOnThePreviewLayer = YES;
     NSUInteger numTouches = [recognizer numberOfTouches], i;
-    for ( i = 0; i < numTouches; ++i ) {
+    for (i = 0; i < numTouches; ++i) {
         CGPoint location = [recognizer locationOfTouch:i inView:self.preview];
         CGPoint convertedLocation = [self.preview.layer convertPoint:location fromLayer:self.view.layer];
         if ( ! [self.preview.layer containsPoint:convertedLocation] ) {
@@ -234,50 +236,38 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }
 }
 
-#pragma mark - Camera
+#pragma mark - Public Method
 
-- (void)attachToViewController:(UIViewController *)vc withFrame:(CGRect)frame
-{
-    [vc addChildViewController:self];
+- (void)attachToViewController:(UIViewController *)vc frame:(CGRect)frame {
+    [self willMoveToParentViewController:vc];
     self.view.frame = frame;
     [vc.view addSubview:self.view];
+    [vc addChildViewController:self];
     [self didMoveToParentViewController:vc];
 }
 
-- (void)start
-{
+- (void)start {
     [SCCameraController requestCameraPermission:^(BOOL granted) {
-        if(granted) {
-            // request microphone permission if video is enabled
-            if(self.videoEnabled) {
-                [SCCameraController requestMicrophonePermission:^(BOOL granted) {
-                    if(granted) {
-                        [self initialize];
-                    }
-                    else {
-                        NSError *error = [NSError errorWithDomain:SCCameraViewControllerErrorDomain
-                                                             code:LLSimpleCameraErrorCodeMicrophonePermission
-                                                         userInfo:nil];
-                        [self passError:error];
-                    }
-                }];
-            }
-            else {
-                [self initialize];
-            }
-        }
-        else {
-            NSError *error = [NSError errorWithDomain:SCCameraViewControllerErrorDomain
-                                                 code:LLSimpleCameraErrorCodeCameraPermission
+        if (granted) {
+            [self initialize];
+        } else {
+            NSError *error = [NSError errorWithDomain:SCCameraErrorDomain
+                                                 code:SCCameraErrorCodeCameraPermission
                                              userInfo:nil];
             [self passError:error];
         }
     }];
 }
 
-- (void)initialize
-{
-    if(!_session) {
+- (void)stop {
+    [self.session stopRunning];
+    self.session = nil;
+}
+
+#pragma mark - Private Method
+
+- (void)initialize {
+    if (!_session) {
         _session = [[AVCaptureSession alloc] init];
         _session.sessionPreset = self.cameraQuality;
         
@@ -291,20 +281,20 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
         
         AVCaptureDevicePosition devicePosition;
         switch (self.position) {
-            case LLCameraPositionRear:
-                if([self.class isRearCameraAvailable]) {
+            case SCCameraPositionRear:
+                if ([self.class isRearCameraAvailable]) {
                     devicePosition = AVCaptureDevicePositionBack;
                 } else {
                     devicePosition = AVCaptureDevicePositionFront;
-                    _position = LLCameraPositionFront;
+                    _position = SCCameraPositionFront;
                 }
                 break;
-            case LLCameraPositionFront:
-                if([self.class isFrontCameraAvailable]) {
+            case SCCameraPositionFront:
+                if ([self.class isFrontCameraAvailable]) {
                     devicePosition = AVCaptureDevicePositionFront;
                 } else {
                     devicePosition = AVCaptureDevicePositionBack;
-                    _position = LLCameraPositionRear;
+                    _position = SCCameraPositionRear;
                 }
                 break;
             default:
@@ -312,7 +302,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
                 break;
         }
         
-        if(devicePosition == AVCaptureDevicePositionUnspecified) {
+        if (devicePosition == AVCaptureDevicePositionUnspecified) {
             self.videoCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         } else {
             self.videoCaptureDevice = [self cameraWithPosition:devicePosition];
@@ -326,30 +316,11 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
             return;
         }
         
-        if([self.session canAddInput:_videoDeviceInput]) {
+        if ([self.session canAddInput:_videoDeviceInput]) {
             [self.session  addInput:_videoDeviceInput];
             self.captureVideoPreviewLayer.connection.videoOrientation = [self orientationForConnection];
         }
-        
-        // add audio if video is enabled
-        if(self.videoEnabled) {
-            _audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-            _audioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:_audioCaptureDevice error:&error];
-            if (!_audioDeviceInput) {
-                [self passError:error];
-            }
-            
-            if([self.session canAddInput:_audioDeviceInput]) {
-                [self.session addInput:_audioDeviceInput];
-            }
-            
-            _movieFileOutput = [[AVCaptureMovieFileOutput alloc] init];
-            [_movieFileOutput setMovieFragmentInterval:kCMTimeInvalid];
-            if([self.session canAddOutput:_movieFileOutput]) {
-                [self.session addOutput:_movieFileOutput];
-            }
-        }
-        
+                
         // continiously adjust white balance
         self.whiteBalanceMode = AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance;
         
@@ -368,20 +339,12 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self.session startRunning];
 }
 
-- (void)stop
-{
-    [self.session stopRunning];
-    self.session = nil;
-}
-
-
 #pragma mark - Image Capture
 
--(void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture exactSeenImage:(BOOL)exactSeenImage animationBlock:(void (^)(AVCaptureVideoPreviewLayer *))animationBlock
-{
-    if(!self.session) {
-        NSError *error = [NSError errorWithDomain:SCCameraViewControllerErrorDomain
-                                             code:LLSimpleCameraErrorCodeSession
+- (void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture exactSeenImage:(BOOL)exactSeenImage animationBlock:(void (^)(AVCaptureVideoPreviewLayer *))animationBlock {
+    if (!self.session) {
+        NSError *error = [NSError errorWithDomain:SCCameraErrorDomain
+                                             code:SCCameraErrorCodeSession
                                          userInfo:nil];
         onCapture(self, nil, nil, error);
         return;
@@ -421,7 +384,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
         }
         
         // trigger the block
-        if(onCapture) {
+        if (onCapture) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 onCapture(self, image, metadata, error);
             });
@@ -429,7 +392,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }];
 }
 
--(void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture exactSeenImage:(BOOL)exactSeenImage {
+- (void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture exactSeenImage:(BOOL)exactSeenImage {
     
     [self capture:onCapture exactSeenImage:exactSeenImage animationBlock:^(AVCaptureVideoPreviewLayer *layer) {
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
@@ -444,97 +407,20 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }];
 }
 
--(void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture
-{
+- (void)capture:(void (^)(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error))onCapture {
     [self capture:onCapture exactSeenImage:NO];
-}
-
-#pragma mark - Video Capture
-
-- (void)startRecordingWithOutputUrl:(NSURL *)url didRecord:(void (^)(SCCameraController *camera, NSURL *outputFileUrl, NSError *error))completionBlock
-{
-    // check if video is enabled
-    if(!self.videoEnabled) {
-        NSError *error = [NSError errorWithDomain:SCCameraViewControllerErrorDomain
-                                             code:LLSimpleCameraErrorCodeVideoNotEnabled
-                                         userInfo:nil];
-        [self passError:error];
-        return;
-    }
-    
-    if(self.flash == LLCameraFlashOn) {
-        [self enableTorch:YES];
-    }
-    
-    // set video orientation
-    for(AVCaptureConnection *connection in [self.movieFileOutput connections]) {
-        for (AVCaptureInputPort *port in [connection inputPorts]) {
-            // get only the video media types
-            if ([[port mediaType] isEqual:AVMediaTypeVideo]) {
-                if ([connection isVideoOrientationSupported]) {
-                    [connection setVideoOrientation:[self orientationForConnection]];
-                }
-            }
-        }
-    }
-    
-    self.didRecordCompletionBlock = completionBlock;
-    
-    [self.movieFileOutput startRecordingToOutputFileURL:url recordingDelegate:self];
-}
-
-- (void)stopRecording
-{
-    if(!self.videoEnabled) {
-        return;
-    }
-    
-    [self.movieFileOutput stopRecording];
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
-{
-    self.recording = YES;
-    if(self.onStartRecording) self.onStartRecording(self);
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
-    self.recording = NO;
-    [self enableTorch:NO];
-    
-    if(self.didRecordCompletionBlock) {
-        self.didRecordCompletionBlock(self, outputFileURL, error);
-    }
-}
-
-- (void)enableTorch:(BOOL)enabled
-{
-    // check if the device has a torch, otherwise don't do anything
-    if([self isTorchAvailable]) {
-        AVCaptureTorchMode torchMode = enabled ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
-        NSError *error;
-        if ([self.videoCaptureDevice lockForConfiguration:&error]) {
-            [self.videoCaptureDevice setTorchMode:torchMode];
-            [self.videoCaptureDevice unlockForConfiguration];
-        } else {
-            [self passError:error];
-        }
-    }
 }
 
 #pragma mark - Helpers
 
-- (void)passError:(NSError *)error
-{
-    if(self.onError) {
+- (void)passError:(NSError *)error {
+    if (self.onError) {
         __weak typeof(self) weakSelf = self;
         self.onError(weakSelf, error);
     }
 }
 
-- (AVCaptureConnection *)captureConnection
-{
+- (AVCaptureConnection *)captureConnection {
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
         for (AVCaptureInputPort *port in [connection inputPorts]) {
@@ -551,49 +437,46 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     return videoConnection;
 }
 
-- (void)setVideoCaptureDevice:(AVCaptureDevice *)videoCaptureDevice
-{
+- (void)setVideoCaptureDevice:(AVCaptureDevice *)videoCaptureDevice {
     _videoCaptureDevice = videoCaptureDevice;
     
     if(videoCaptureDevice.flashMode == AVCaptureFlashModeAuto) {
-        _flash = LLCameraFlashAuto;
+        _flash = SCCameraFlashAuto;
     } else if(videoCaptureDevice.flashMode == AVCaptureFlashModeOn) {
-        _flash = LLCameraFlashOn;
+        _flash = SCCameraFlashOn;
     } else if(videoCaptureDevice.flashMode == AVCaptureFlashModeOff) {
-        _flash = LLCameraFlashOff;
+        _flash = SCCameraFlashOff;
     } else {
-        _flash = LLCameraFlashOff;
+        _flash = SCCameraFlashOff;
     }
     
     _effectiveScale = 1.0f;
     
     // trigger block
-    if(self.onDeviceChange) {
+    if (self.onDeviceChange) {
         __weak typeof(self) weakSelf = self;
         self.onDeviceChange(weakSelf, videoCaptureDevice);
     }
 }
 
-- (BOOL)isFlashAvailable
-{
+- (BOOL)isFlashAvailable {
     return self.videoCaptureDevice.hasFlash && self.videoCaptureDevice.isFlashAvailable;
 }
 
-- (BOOL)isTorchAvailable
-{
+- (BOOL)isTorchAvailable {
     return self.videoCaptureDevice.hasTorch && self.videoCaptureDevice.isTorchAvailable;
 }
 
-- (BOOL)updateFlashMode:(LLCameraFlash)cameraFlash
-{
-    if(!self.session)
+- (BOOL)updateFlashMode:(SCCameraFlash)cameraFlash {
+    if (!self.session) {
         return NO;
+    }
     
     AVCaptureFlashMode flashMode;
     
-    if(cameraFlash == LLCameraFlashOn) {
+    if (cameraFlash == SCCameraFlashOn) {
         flashMode = AVCaptureFlashModeOn;
-    } else if(cameraFlash == LLCameraFlashAuto) {
+    } else if (cameraFlash == SCCameraFlashAuto) {
         flashMode = AVCaptureFlashModeAuto;
     } else {
         flashMode = AVCaptureFlashModeOff;
@@ -617,8 +500,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }
 }
 
-- (void)setWhiteBalanceMode:(AVCaptureWhiteBalanceMode)whiteBalanceMode
-{
+- (void)setWhiteBalanceMode:(AVCaptureWhiteBalanceMode)whiteBalanceMode {
     if ([self.videoCaptureDevice isWhiteBalanceModeSupported:whiteBalanceMode]) {
         NSError *error;
         if ([self.videoCaptureDevice lockForConfiguration:&error]) {
@@ -630,82 +512,30 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }
 }
 
-- (void)setMirror:(LLCameraMirror)mirror
-{
-    _mirror = mirror;
-    
-    if(!self.session) {
-        return;
-    }
-    
-    AVCaptureConnection *videoConnection = [_movieFileOutput connectionWithMediaType:AVMediaTypeVideo];
-    AVCaptureConnection *pictureConnection = [_stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
-    
-    switch (mirror) {
-        case LLCameraMirrorOff: {
-            if ([videoConnection isVideoMirroringSupported]) {
-                [videoConnection setVideoMirrored:NO];
-            }
-            
-            if ([pictureConnection isVideoMirroringSupported]) {
-                [pictureConnection setVideoMirrored:NO];
-            }
-            break;
-        }
-            
-        case LLCameraMirrorOn: {
-            if ([videoConnection isVideoMirroringSupported]) {
-                [videoConnection setVideoMirrored:YES];
-            }
-            
-            if ([pictureConnection isVideoMirroringSupported]) {
-                [pictureConnection setVideoMirrored:YES];
-            }
-            break;
-        }
-            
-        case LLCameraMirrorAuto: {
-            BOOL shouldMirror = (_position == LLCameraPositionFront);
-            if ([videoConnection isVideoMirroringSupported]) {
-                [videoConnection setVideoMirrored:shouldMirror];
-            }
-            
-            if ([pictureConnection isVideoMirroringSupported]) {
-                [pictureConnection setVideoMirrored:shouldMirror];
-            }
-            break;
-        }
-    }
-    
-    return;
-}
-
-- (LLCameraPosition)togglePosition
-{
-    if(!self.session) {
+- (SCCameraPosition)togglePosition {
+    if (!self.session) {
         return self.position;
     }
     
-    if(self.position == LLCameraPositionRear) {
-        self.cameraPosition = LLCameraPositionFront;
+    if (self.position == SCCameraPositionRear) {
+        self.cameraPosition = SCCameraPositionFront;
     } else {
-        self.cameraPosition = LLCameraPositionRear;
+        self.cameraPosition = SCCameraPositionRear;
     }
     
     return self.position;
 }
 
-- (void)setCameraPosition:(LLCameraPosition)cameraPosition
-{
+- (void)setCameraPosition:(SCCameraPosition)cameraPosition {
     if(_position == cameraPosition || !self.session) {
         return;
     }
     
-    if(cameraPosition == LLCameraPositionRear && ![self.class isRearCameraAvailable]) {
+    if(cameraPosition == SCCameraPositionRear && ![self.class isRearCameraAvailable]) {
         return;
     }
     
-    if(cameraPosition == LLCameraPositionFront && ![self.class isFrontCameraAvailable]) {
+    if(cameraPosition == SCCameraPositionFront && ![self.class isFrontCameraAvailable]) {
         return;
     }
     
@@ -716,20 +546,20 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     
     // get new input
     AVCaptureDevice *device = nil;
-    if(self.videoDeviceInput.device.position == AVCaptureDevicePositionBack) {
+    if (self.videoDeviceInput.device.position == AVCaptureDevicePositionBack) {
         device = [self cameraWithPosition:AVCaptureDevicePositionFront];
     } else {
         device = [self cameraWithPosition:AVCaptureDevicePositionBack];
     }
     
-    if(!device) {
+    if (!device) {
         return;
     }
     
     // add input to session
     NSError *error = nil;
     AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:device error:&error];
-    if(error) {
+    if (error) {
         [self passError:error];
         [self.session commitConfiguration];
         return;
@@ -741,15 +571,12 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self.session commitConfiguration];
     
     self.videoCaptureDevice = device;
-    self.videoDeviceInput = videoInput;
-    
-    [self setMirror:_mirror];
+    self.videoDeviceInput = videoInput;    
 }
 
 
 // Find a camera with the specified AVCaptureDevicePosition, returning nil if one is not found
-- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position
-{
+- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in devices) {
         if (device.position == position) return device;
@@ -759,8 +586,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
 
 #pragma mark - Focus
 
-- (void)previewTapped:(UIGestureRecognizer *)gestureRecognizer
-{
+- (void)previewTapped:(UIGestureRecognizer *)gestureRecognizer {
     if(!self.tapToFocus) {
         return;
     }
@@ -773,8 +599,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self showFocusBox:touchedPoint];
 }
 
-- (void)addDefaultFocusBox
-{
+- (void)addDefaultFocusBox {
     CALayer *focusBox = [[CALayer alloc] init];
     focusBox.cornerRadius = 5.0f;
     focusBox.bounds = CGRectMake(0.0f, 0.0f, 70, 60);
@@ -793,14 +618,12 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     [self alterFocusBox:focusBox animation:focusBoxAnimation];
 }
 
-- (void)alterFocusBox:(CALayer *)layer animation:(CAAnimation *)animation
-{
+- (void)alterFocusBox:(CALayer *)layer animation:(CAAnimation *)animation {
     self.focusBoxLayer = layer;
     self.focusBoxAnimation = animation;
 }
 
-- (void)focusAtPoint:(CGPoint)point
-{
+- (void)focusAtPoint:(CGPoint)point {
     AVCaptureDevice *device = self.videoCaptureDevice;
     if (device.isFocusPointOfInterestSupported && [device isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
         NSError *error;
@@ -814,9 +637,8 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }
 }
 
-- (void)showFocusBox:(CGPoint)point
-{
-    if(self.focusBoxLayer) {
+- (void)showFocusBox:(CGPoint)point {
+    if (self.focusBoxLayer) {
         // clear animations
         [self.focusBoxLayer removeAllAnimations];
         
@@ -827,42 +649,16 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
         [CATransaction commit];
     }
     
-    if(self.focusBoxAnimation) {
+    if (self.focusBoxAnimation) {
         // run the animation
         [self.focusBoxLayer addAnimation:self.focusBoxAnimation forKey:@"animateOpacity"];
     }
 }
 
-#pragma mark - UIViewController
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-    
-    self.preview.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    
-    CGRect bounds = self.preview.bounds;
-    self.captureVideoPreviewLayer.bounds = bounds;
-    self.captureVideoPreviewLayer.position = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
-    
-    self.captureVideoPreviewLayer.connection.videoOrientation = [self orientationForConnection];
-}
-
-- (AVCaptureVideoOrientation)orientationForConnection
-{
+- (AVCaptureVideoOrientation)orientationForConnection {
     AVCaptureVideoOrientation videoOrientation = AVCaptureVideoOrientationPortrait;
     
-    if(self.useDeviceOrientation) {
+    if (self.useDeviceOrientation) {
         switch ([UIDevice currentDevice].orientation) {
             case UIDeviceOrientationLandscapeLeft:
                 // yes to the right, this is not bug!
@@ -878,8 +674,7 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
                 videoOrientation = AVCaptureVideoOrientationPortrait;
                 break;
         }
-    }
-    else {
+    } else {
         switch ([[UIApplication sharedApplication] statusBarOrientation]) {
             case UIInterfaceOrientationLandscapeLeft:
                 videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
@@ -899,29 +694,9 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     return videoOrientation;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    
-    // layout subviews is not called when rotating from landscape right/left to left/right
-    if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation) && UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) {
-        [self.view setNeedsLayout];
-    }
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc {
-    [self stop];
-}
-
 #pragma mark - Class Methods
 
-+ (void)requestCameraPermission:(void (^)(BOOL granted))completionBlock
-{
++ (void)requestCameraPermission:(void (^)(BOOL granted))completionBlock {
     if ([AVCaptureDevice respondsToSelector:@selector(requestAccessForMediaType: completionHandler:)]) {
         [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
             // return to main thread
@@ -936,27 +711,11 @@ NSString *const SCCameraViewControllerErrorDomain = @"SCCameraViewControllerDoma
     }
 }
 
-+ (void)requestMicrophonePermission:(void (^)(BOOL granted))completionBlock
-{
-    if([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)]) {
-        [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-            // return to main thread
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if(completionBlock) {
-                    completionBlock(granted);
-                }
-            });
-        }];
-    }
-}
-
-+ (BOOL)isFrontCameraAvailable
-{
++ (BOOL)isFrontCameraAvailable {
     return [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront];
 }
 
-+ (BOOL)isRearCameraAvailable
-{
++ (BOOL)isRearCameraAvailable {
     return [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear];
 }
 
