@@ -81,9 +81,13 @@
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
 
-    self.camera = [[SCCameraController alloc] initWithQuality:AVCaptureSessionPresetHigh position:SCCameraPositionRear];
-    
-    [self.camera attachToViewController:self frame:CGRectMake(0, 0, screenRect.size.width, screenRect.size.height)];
+    self.camera = [[SCCameraController alloc] init];
+
+    [self.camera willMoveToParentViewController:self];
+    self.camera.view.frame = self.view.frame;;
+    [self.view addSubview:self.camera.view];
+    [self addChildViewController:self.camera];
+    [self.camera didMoveToParentViewController:self];
     
     // http://stackoverflow.com/questions/5427656/ios-uiimagepickercontroller-result-image-orientation-after-upload
     // you probably will want to set this to YES, if you are going view the image outside iOS.

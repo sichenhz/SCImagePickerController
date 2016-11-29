@@ -10,5 +10,4 @@
 
 @interface SCCameraViewCell : UICollectionViewCell
 
-
 @end
