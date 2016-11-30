@@ -22,33 +22,51 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eWT-qZ-jiS">
-                                <rect key="frame" x="133" y="236" width="54" height="30"/>
+                                <rect key="frame" x="83" y="500" width="54" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="9H5-Ws-mF2"/>
+                                    <constraint firstAttribute="width" constant="54" id="NnT-VX-aaY"/>
+                                </constraints>
                                 <state key="normal" title="Camera"/>
                                 <connections>
                                     <action selector="startButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="j6n-C7-Zeh"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fOA-zT-ytR">
-                                <rect key="frame" x="134" y="302" width="52" height="30"/>
+                                <rect key="frame" x="184" y="500" width="52" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="52" id="Ego-rd-NRU"/>
+                                    <constraint firstAttribute="height" constant="30" id="t4a-u4-oCK"/>
+                                </constraints>
                                 <state key="normal" title="Albums"/>
                                 <connections>
                                     <action selector="albumsButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p0s-km-b9J"/>
                                     <action selector="startButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="J1S-WX-XEn"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="E1c-vC-zjn">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="448"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="fOA-zT-ytR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="33" id="4uB-RM-Exk"/>
-                            <constraint firstItem="fOA-zT-ytR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="DN8-HF-9M8"/>
-                            <constraint firstItem="eWT-qZ-jiS" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-33" id="dWN-Hk-JrH"/>
-                            <constraint firstItem="eWT-qZ-jiS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="m6p-l2-Qha"/>
+                            <constraint firstItem="eWT-qZ-jiS" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="-50" id="GHG-BU-bLP"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="eWT-qZ-jiS" secondAttribute="bottom" constant="38" id="HnL-Fs-7ww"/>
+                            <constraint firstItem="E1c-vC-zjn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Q2e-ne-8mw"/>
+                            <constraint firstItem="fOA-zT-ytR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" constant="50" id="Tga-cr-1l9"/>
+                            <constraint firstAttribute="trailing" secondItem="E1c-vC-zjn" secondAttribute="trailing" id="UT1-SS-6Mc"/>
+                            <constraint firstItem="E1c-vC-zjn" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="YRW-Ph-kKL"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="E1c-vC-zjn" secondAttribute="bottom" constant="120" id="jnW-3Z-2Zn"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="fOA-zT-ytR" secondAttribute="bottom" constant="38" id="vgh-P6-PWN"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="E1c-vC-zjn" id="sDq-Hz-a3q"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-358" y="148"/>
+            <point key="canvasLocation" x="-358.125" y="147.88732394366198"/>
         </scene>
     </scenes>
 </document>

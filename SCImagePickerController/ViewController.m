@@ -12,24 +12,11 @@
 
 @interface ViewController ()<SCImagePickerControllerDelegate, SCImageClipViewControllerDelegate>
 
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIImageView *imageView;
 
 @end
 
 @implementation ViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    
-    self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 50, 200, 200)];
-    [self.view addSubview:self.imageView];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 - (IBAction)startButtonPressed:(id)sender {
     
@@ -45,10 +32,6 @@
     picker.cropSize = CGSizeMake(750, 750);
     
     [self presentViewController:picker animated:YES completion:nil];
-
-//    SCImageClipViewController *clipViewController = [[SCImageClipViewController alloc] initWithImage:[UIImage imageNamed:@"IMG_4034.jpg"] cropSize:CGSizeMake(750, 750)];
-//    clipViewController.delegate = self;
-//    [self presentViewController:clipViewController animated:YES completion:nil];
 }
 
 - (IBAction)albumsButtonPressed:(id)sender {
@@ -57,11 +40,11 @@
     
     picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
     
-    picker.allowsMultipleSelection = YES;
-    picker.maxMultipleCount = 10;
-    
-    picker.allowsEditing = YES;
-    picker.cropSize = CGSizeMake(750, 750);
+//    picker.allowsMultipleSelection = YES;
+//    picker.maxMultipleCount = 10;
+//    
+//    picker.allowsEditing = YES;
+//    picker.cropSize = CGSizeMake(750, 750);
     
     [self presentViewController:picker animated:YES completion:nil];
 }

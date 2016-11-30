@@ -48,7 +48,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     self.view.clipsToBounds = YES;
 
-    self.scrollView = [[UIScrollView alloc] initWithFrame:[self centerFitRectWithContentSize:self.cropSize containerSize:[UIScreen mainScreen].bounds.size]];
+    self.scrollView = [[UIScrollView alloc] init];
     self.scrollView.clipsToBounds = NO;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
@@ -81,17 +81,20 @@
     
     // mask
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    UIImageView *mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"photo_rule.png"]]];
-    mask.frame = self.scrollView.frame;
-    [self.view addSubview:mask];
-    UIView *topMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, self.scrollView.frame.origin.y)];
-    UIView *bottomMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.scrollView.frame), screenSize.width, topMaskView.frame.size.height)];
-    topMaskView.backgroundColor = [UIColor blackColor];
-    bottomMaskView.backgroundColor = [UIColor blackColor];
-    topMaskView.alpha = 0.7;
-    bottomMaskView.alpha = 0.7;
-    [self.view addSubview:topMaskView];
-    [self.view addSubview:bottomMaskView];
+    if (!self.isPreview) {
+        UIImageView *mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"photo_rule.png"]]];
+        mask.frame = self.scrollView.frame;
+        [self.view addSubview:mask];
+        
+        UIView *topMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, self.scrollView.frame.origin.y)];
+        UIView *bottomMaskView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.scrollView.frame), screenSize.width, topMaskView.frame.size.height)];
+        topMaskView.backgroundColor = [UIColor blackColor];
+        bottomMaskView.backgroundColor = [UIColor blackColor];
+        topMaskView.alpha = 0.7;
+        bottomMaskView.alpha = 0.7;
+        [self.view addSubview:topMaskView];
+        [self.view addSubview:bottomMaskView];
+    }
 
     // button
     UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -130,6 +133,7 @@
         } else {
             [self.picker.selectedAssets removeObjectAtIndex:0];
             [self.navigationController popViewControllerAnimated:YES];
+            [self.picker updateStatusBarHidden:NO animation:NO];
         }
     } else {
         if ([self.delegate respondsToSelector:@selector(clipViewControllerDidCancel:)]) {
@@ -139,7 +143,7 @@
 }
 
 - (void)selectButtonPressed:(UIButton *)button {
-    UIImage *image = [self clibImage:self.imageView.image];
+    UIImage *image = self.isPreview ? self.imageView.image : [self clibImage:self.imageView.image];
     if (self.picker) {
         [self.picker finishPickingImage:image];
     } else {
@@ -152,6 +156,10 @@
 #pragma mark - Private Method
 
 - (void)configureImage:(UIImage *)image {
+    
+    CGSize contentSize = self.isPreview ? image.size : self.cropSize;
+    self.scrollView.frame = [self centerFitRectWithContentSize:contentSize containerSize:[UIScreen mainScreen].bounds.size];
+    
     self.imageView.image = image;
     [self.imageView sizeToFit];
     CGFloat scaleWidth = self.scrollView.frame.size.width / self.imageView.frame.size.width;
