@@ -36,10 +36,10 @@
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
     
-    picker.sourceType = SCImagePickerControllerSourceTypeSavedPhotosAlbum;
+    picker.sourceType = SCImagePickerControllerSourceTypeCamera;
     
-//    picker.allowsMultipleSelection = YES;
-//    picker.maxMultipleCount = 10;
+    picker.allowsMultipleSelection = YES;
+    picker.maxMultipleCount = 10;
 
     picker.allowsEditing = YES;
     picker.cropSize = CGSizeMake(750, 750);

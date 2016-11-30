@@ -185,8 +185,8 @@
                 clip.view.frame = self.picker.view.frame;
                 [self.picker.view addSubview:clip.view];
                 [self.picker addChildViewController:clip];
-                [self.picker setNeedsStatusBarAppearanceUpdate];
                 [camera didMoveToParentViewController:self];
+                [self.picker updateStatusBarHidden:YES animation:NO];
             } else {
                 if ([weakSelf.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
                     [weakSelf.picker.delegate assetsPickerController:self.picker didFinishPickingImage:image];
@@ -220,32 +220,7 @@
 }
 
 - (void)albumsButtonPressed:(UIButton *)button {
-    
-    if (self.picker.childViewControllers.count == 2) {
-        [self removeFromParentViewController];
-        [self.picker setNeedsStatusBarAppearanceUpdate];
-        [UIView animateWithDuration:0.3 animations:^{
-            CGRect frame = self.view.frame;
-            frame.origin.y = frame.size.height;
-            self.view.frame = frame;
-        } completion:^(BOOL finished) {
-            [self.view removeFromSuperview];
-        }];
-    } else {
-        [self.picker.navigationController willMoveToParentViewController:self.picker];
-        self.picker.navigationController.view.frame = self.picker.view.frame;
-        __block CGRect frame = self.picker.navigationController.view.frame;
-        frame.origin.y = frame.size.height;
-        self.picker.navigationController.view.frame = frame;
-        [UIView animateWithDuration:0.3 animations:^{
-            frame.origin.y = 0;
-            self.picker.navigationController.view.frame = frame;
-        }];
-        [self.picker.view addSubview:self.picker.navigationController.view];
-        [self.picker addChildViewController:self.picker.navigationController];
-        [self.picker setNeedsStatusBarAppearanceUpdate];
-        [self.picker.navigationController didMoveToParentViewController:self];
-    }
+    [self.picker presentAlbums];
 }
 
 @end

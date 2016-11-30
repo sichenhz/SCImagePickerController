@@ -126,7 +126,7 @@
         if (self.image) {
             [self.view removeFromSuperview];
             [self removeFromParentViewController];
-            [self.picker setNeedsStatusBarAppearanceUpdate];
+            [self.picker updateStatusBarHidden:YES animation:NO];
         } else {
             [self.picker.selectedAssets removeObjectAtIndex:0];
             [self.navigationController popViewControllerAnimated:YES];

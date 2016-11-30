@@ -40,6 +40,10 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 - (void)finishPickingImage:(UIImage *)image;
 - (void)cancel;
 
+- (void)presentAlbums;
+- (void)presentCamera;
+- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation;
+
 @end
 
 @protocol SCImagePickerControllerDelegate <NSObject>

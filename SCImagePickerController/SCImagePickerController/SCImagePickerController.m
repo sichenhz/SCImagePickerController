@@ -15,22 +15,22 @@
 @interface SCImagePickerController()
 
 @property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, weak) SCCameraViewController *camera;
+@property (nonatomic) BOOL statusBarHidden;
 
 @end
 
 @implementation SCImagePickerController
+{
+    BOOL _isPresenting;
+}
 
 - (BOOL)prefersStatusBarHidden {
-    UIViewController *lastController = self.childViewControllers.lastObject;
-    if ([lastController isKindOfClass:[SCImageClipViewController class]] ||
-        [lastController isKindOfClass:[SCCameraViewController class]]) {
-        return YES;
-    } else if (([lastController isKindOfClass:[UINavigationController class]] &&
-                [[(UINavigationController *)lastController topViewController] isKindOfClass:[SCImageClipViewController class]])) {
-        return YES;
-    } else {
-        return NO;
-    }
+    return self.statusBarHidden;
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
 }
 
 #pragma mark - Life Cycle
@@ -102,6 +102,92 @@
     [self updateDoneButton];
 }
 
+- (void)presentAlbums {
+    if (_isPresenting) {
+        return;
+    }
+    _isPresenting = YES;
+    if (self.childViewControllers.count == 2) {
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = self.camera.view.frame;
+            frame.origin.y = frame.size.height;
+            self.camera.view.frame = frame;
+        } completion:^( BOOL finished) {
+            [self.camera removeFromParentViewController];
+            _isPresenting = NO;
+        }];
+        [self updateStatusBarHidden:NO animation:NO];
+    } else {
+        [self.navigationController willMoveToParentViewController:self];
+        self.navigationController.view.frame = self.view.frame;
+        CGRect frame = self.navigationController.view.frame;
+        frame.origin.y = frame.size.height;
+        self.navigationController.view.frame = frame;
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = self.navigationController.view.frame;
+            frame.origin.y = 0;
+            self.navigationController.view.frame = frame;
+        } completion:^(BOOL finished) {
+            _isPresenting = NO;
+        }];
+        [self.view addSubview:self.navigationController.view];
+        [self addChildViewController:self.navigationController];
+        [self.navigationController didMoveToParentViewController:self];
+        [self updateStatusBarHidden:NO animation:NO];
+    }
+}
+
+- (void)presentCamera {
+    if (_isPresenting) {
+        return;
+    }
+    _isPresenting = YES;
+    if (self.childViewControllers.count == 2) {
+        UINavigationController *nav = self.navigationController;
+        [nav removeFromParentViewController];
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = nav.view.frame;
+            frame.origin.y = frame.size.height;
+            nav.view.frame = frame;
+        } completion:^(BOOL finished) {
+            [nav.view removeFromSuperview];
+            _isPresenting = NO;
+        }];
+        [self updateStatusBarHidden:YES animation:NO];
+    } else {
+        SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
+        _camera = camera;
+        [camera willMoveToParentViewController:self];
+        camera.view.frame = self.view.frame;
+        CGRect frame = camera.view.frame;
+        frame.origin.y = frame.size.height;
+        camera.view.frame = frame;
+        [UIView animateWithDuration:0.3 animations:^{
+            CGRect frame = camera.view.frame;
+            frame.origin.y = 0;
+            camera.view.frame = frame;
+        } completion:^(BOOL finished) {
+            [self updateStatusBarHidden:YES animation:NO];
+            _isPresenting = NO;
+        }];
+        [self.view addSubview:camera.view];
+        [self addChildViewController:camera];
+        [camera didMoveToParentViewController:self];
+    }
+}
+
+
+- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation {
+    self.statusBarHidden = hidden;
+    if (animation) {
+        [UIView animateWithDuration:0.3f animations:^{
+            [self setNeedsStatusBarAppearanceUpdate];
+        }];
+    } else {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+}
+
 #pragma mark - Private Method
 
 - (void)finishPickingAssets {
@@ -123,8 +209,7 @@
 }
 
 - (void)updateDoneButton {
-    UINavigationController *nav = (UINavigationController *)self.childViewControllers[0];
-    for (UIViewController *viewController in nav.viewControllers) {
+    for (UIViewController *viewController in self.navigationController.viewControllers) {
         viewController.navigationItem.rightBarButtonItem.enabled = self.selectedAssets.count > 0;
         if (viewController.navigationItem.rightBarButtonItems.count > 1) {
             UIBarButtonItem *badgeButtonItem = viewController.navigationItem.rightBarButtonItems[1];

@@ -292,34 +292,7 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == 0) {
 
-        if (self.picker.childViewControllers.count == 2) {
-            SCCameraViewController *camera = self.picker.childViewControllers.lastObject;
-            [camera removeFromParentViewController];
-            [self.picker setNeedsStatusBarAppearanceUpdate];
-            [UIView animateWithDuration:0.3 animations:^{
-                CGRect frame = camera.view.frame;
-                frame.origin.y = frame.size.height;
-                camera.view.frame = frame;
-            } completion:^(BOOL finished) {
-                [camera.view removeFromSuperview];
-            }];
-        } else {
-            SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self.picker];
-            [camera willMoveToParentViewController:self.picker];
-            camera.view.frame = self.picker.view.frame;
-            __block CGRect frame = camera.view.frame;
-            frame.origin.y = frame.size.height;
-            camera.view.frame = frame;
-            [UIView animateWithDuration:0.3 animations:^{
-                frame.origin.y = 0;
-                camera.view.frame = frame;
-            } completion:^(BOOL finished) {
-                [self.picker setNeedsStatusBarAppearanceUpdate];
-            }];
-            [self.picker.view addSubview:camera.view];
-            [self.picker addChildViewController:camera];
-            [camera didMoveToParentViewController:self];
-        }
+        [self.picker presentCamera];
         
     } else {
         
@@ -330,6 +303,8 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == 0) {
+        
+        [self.picker presentCamera];
         
     } else {
         
