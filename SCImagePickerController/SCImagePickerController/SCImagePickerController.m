@@ -33,6 +33,10 @@
     return UIStatusBarAnimationSlide;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 #pragma mark - Life Cycle
 
 - (instancetype)init {
