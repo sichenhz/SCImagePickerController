@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SCImagePickerController"
-  s.version      = "1.0.4"
+  s.version      = "1.0.0"
   s.summary      = "A photo album"
   s.homepage     = "https://github.com/SeJasonWang/SCImagePickerController"
   s.license      = "MIT"
