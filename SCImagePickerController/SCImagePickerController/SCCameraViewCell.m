@@ -25,4 +25,8 @@
     return self;
 }
 
+- (void)setSelected:(BOOL)selected {
+    // Disable selected
+}
+
 @end

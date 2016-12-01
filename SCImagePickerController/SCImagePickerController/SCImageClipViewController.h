@@ -11,6 +11,9 @@
 
 @interface SCImageClipViewController : UIViewController
 
+// If set this property to YES, clipping function would be disable.
+@property (nonatomic, getter=isPreview) BOOL preview;
+
 - (instancetype)initWithImage:(UIImage *)image picker:(SCImagePickerController *)picker;
 
 // Call this method and set delegate if you want to use it as a stand-alone tool.

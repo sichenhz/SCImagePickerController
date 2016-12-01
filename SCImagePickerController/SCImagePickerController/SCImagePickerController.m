@@ -48,6 +48,8 @@
     
     if (self.sourceType == SCImagePickerControllerSourceTypeCamera) {
         
+        self.statusBarHidden = YES;
+        
         SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
         [camera willMoveToParentViewController:self];
         camera.view.frame = self.view.frame;
@@ -57,6 +59,8 @@
 
     } else {
         
+        self.statusBarHidden = NO;
+
         [self.navigationController willMoveToParentViewController:self];
         self.navigationController.view.frame = self.view.frame;
         [self.view addSubview:self.navigationController.view];
@@ -88,12 +92,10 @@
     if (self.allowsMultipleSelection) {
         [self updateDoneButton];
     } else {
-        if (self.allowsEditing) {
-            SCImageClipViewController *controller = [[SCImageClipViewController alloc] initWithImage:nil picker:self];
-            [self.navigationController pushViewController:controller animated:YES];
-        } else {
-            [self finishPickingAssets];
-        }
+        SCImageClipViewController *clip = [[SCImageClipViewController alloc] initWithImage:nil picker:self];
+        if (!self.allowsEditing) clip.preview = YES;
+        [self.navigationController pushViewController:clip animated:YES];
+        [self updateStatusBarHidden:YES animation:YES];
     }
 }
 

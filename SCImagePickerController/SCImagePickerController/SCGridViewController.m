@@ -304,13 +304,10 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == 0) {
         
-        [self.picker presentCamera];
-        
     } else {
         
         PHAsset *asset = self.assets[indexPath.item - 1];
         [self.picker deselectAsset:asset];
-        
     }
 }
 

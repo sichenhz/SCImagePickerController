@@ -179,19 +179,14 @@
     
     [self.camera capture:^(SCCameraController *camera, UIImage *image, NSDictionary *metadata, NSError *error) {
         if (!error) {
-            if (self.picker.allowsEditing) {
-                SCImageClipViewController *clip = [[SCImageClipViewController alloc] initWithImage:image picker:self.picker];
-                [clip willMoveToParentViewController:self.picker];
-                clip.view.frame = self.picker.view.frame;
-                [self.picker.view addSubview:clip.view];
-                [self.picker addChildViewController:clip];
-                [camera didMoveToParentViewController:self];
-                [self.picker updateStatusBarHidden:YES animation:NO];
-            } else {
-                if ([weakSelf.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
-                    [weakSelf.picker.delegate assetsPickerController:self.picker didFinishPickingImage:image];
-                }
-            }
+            SCImageClipViewController *clip = [[SCImageClipViewController alloc] initWithImage:image picker:weakSelf.picker];
+            if (!weakSelf.picker.allowsEditing) clip.preview = YES;
+            [clip willMoveToParentViewController:weakSelf.picker];
+            clip.view.frame = weakSelf.picker.view.frame;
+            [weakSelf.picker.view addSubview:clip.view];
+            [weakSelf.picker addChildViewController:clip];
+            [camera didMoveToParentViewController:weakSelf];
+            [weakSelf.picker updateStatusBarHidden:YES animation:NO];
         }
         else {
             NSLog(@"An error has occured: %@", error);
