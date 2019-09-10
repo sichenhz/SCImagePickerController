@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 // These two properties are available when allowsMultipleSelection value is NO.
 @property (nonatomic) BOOL allowsEditing; // default value is NO.
 @property (nonatomic) CGSize cropSize; // default value is {[UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width}
+@property (nonatomic, getter=isAllowedWhiteEdges) BOOL allowWhiteEdges; // default is NO. If set this property to YES, the original image can be completely contained in the clipping area and export an image with white edges.
 
 @property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
 // Managing Asset Selection

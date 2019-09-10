@@ -135,10 +135,10 @@
 				25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */,
 				25CA28FA1DEC4B5800313F42 /* SCAlbumsViewCell.h */,
 				25CA28FB1DEC4B5800313F42 /* SCAlbumsViewCell.m */,
-				25CA28FE1DEC4B5800313F42 /* SCBadgeView.h */,
-				25CA28FF1DEC4B5800313F42 /* SCBadgeView.m */,
 				25CA29001DEC4B5800313F42 /* SCGridViewCell.h */,
 				25CA29011DEC4B5800313F42 /* SCGridViewCell.m */,
+				25CA28FE1DEC4B5800313F42 /* SCBadgeView.h */,
+				25CA28FF1DEC4B5800313F42 /* SCBadgeView.m */,
 				25CA29061DEC4B5800313F42 /* UIImage+SCHelper.h */,
 				25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */,
 			);
@@ -176,7 +176,7 @@
 				TargetAttributes = {
 					25FE67341CEEB5FC0033483B = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = JEML7X75SB;
+						DevelopmentTeam = 6MZW7C8429;
 					};
 				};
 			};
@@ -185,6 +185,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -344,7 +345,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = JEML7X75SB;
+				DEVELOPMENT_TEAM = 6MZW7C8429;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -357,7 +358,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = JEML7X75SB;
+				DEVELOPMENT_TEAM = 6MZW7C8429;
 				INFOPLIST_FILE = SCImagePickerController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -47,11 +47,10 @@
     return targetSize;
 }
 
-- (UIImage*)sc_crop:(CGRect)rect scale:(CGFloat)scale {
-    CGPoint origin = CGPointMake(-rect.origin.x, -rect.origin.y);
+- (UIImage *)sc_crop:(CGRect)rect scale:(CGFloat)scale {
     UIImage *result = nil;
     UIGraphicsBeginImageContext(CGSizeMake(rect.size.width, rect.size.height));
-    [self drawInRect:CGRectMake(origin.x, origin.y, self.size.width * scale, self.size.height * scale)];
+    [self drawInRect:CGRectMake(rect.origin.x, rect.origin.y, self.size.width * scale, self.size.height * scale)];
     result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return result;

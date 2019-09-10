@@ -28,6 +28,7 @@
     self.picker = picker;
     self.image = image;
     self.cropSize = picker.cropSize;
+    self.allowWhiteEdges = picker.isAllowedWhiteEdges;
     if (self = [super init]) {
     }
     return self;
@@ -170,14 +171,19 @@
     } else {
         self.scrollView.maximumZoomScale = 1;
     }
-    self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
-    self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
-    
-    if (image.size.height > image.size.width) {
-        self.scrollView.contentOffset = CGPointMake(0, (image.size.height * self.scrollView.zoomScale - self.scrollView.frame.size.height) / 2);
+
+    if (self.isAllowedWhiteEdges) {
+        self.scrollView.minimumZoomScale = MIN(scaleWidth, scaleHeight);
     } else {
-        self.scrollView.contentOffset = CGPointMake((image.size.width * self.scrollView.zoomScale - self.scrollView.frame.size.width) / 2, 0);
+        self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+        
+        if ((image.size.height / image.size.width) > (self.cropSize.height / self.cropSize.width)) {
+            self.scrollView.contentOffset = CGPointMake(0, (image.size.height * self.scrollView.minimumZoomScale - self.scrollView.frame.size.height) / 2);
+        } else {
+            self.scrollView.contentOffset = CGPointMake((image.size.width * self.scrollView.minimumZoomScale - self.scrollView.frame.size.width) / 2, 0);
+        }
     }
+    self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
 }
 
 - (void)setCropSize:(CGSize)cropSize {
@@ -191,7 +197,18 @@
 
 - (UIImage *)clibImage:(UIImage *)image {
     CGFloat scale  = self.scrollView.zoomScale;
-    CGPoint offset = self.scrollView.contentOffset;
+
+    // offset
+    CGFloat offsetX = -self.scrollView.contentOffset.x;
+    CGFloat offsetY = -self.scrollView.contentOffset.y;
+    // distance from edge to content
+    if (self.scrollView.bounds.size.width - self.scrollView.contentSize.width > 0) {
+        offsetX = (self.scrollView.bounds.size.width - self.scrollView.contentSize.width) / 2;
+    }
+    if (self.scrollView.bounds.size.height - self.scrollView.contentSize.height > 0) {
+        offsetY = (self.scrollView.bounds.size.height - self.scrollView.contentSize.height) / 2;
+    }
+    
     CGFloat scrollViewScale;
     if (self.cropSize.height / self.cropSize.width <= self.scrollView.frame.size.height / self.scrollView.frame.size.width) {
         scrollViewScale = self.cropSize.width / (self.scrollView.frame.size.width * [[UIScreen mainScreen] scale]);
@@ -199,8 +216,8 @@
         scrollViewScale = self.cropSize.height / (self.scrollView.frame.size.height * [[UIScreen mainScreen] scale]);
     }
     CGFloat orignalScale = scale * [[UIScreen mainScreen] scale] * scrollViewScale;
-    CGPoint orignalOffset = CGPointMake(offset.x * [[UIScreen mainScreen] scale] * scrollViewScale,
-                                        offset.y * [[UIScreen mainScreen] scale] * scrollViewScale);
+    CGPoint orignalOffset = CGPointMake(offsetX * [[UIScreen mainScreen] scale] * scrollViewScale,
+                                        offsetY * [[UIScreen mainScreen] scale] * scrollViewScale);
     CGRect cropRect = CGRectMake(orignalOffset.x, orignalOffset.y, self.cropSize.width, self.cropSize.height);
     UIImage *resultImage = [image sc_crop:cropRect scale:orignalScale];
     return resultImage;
