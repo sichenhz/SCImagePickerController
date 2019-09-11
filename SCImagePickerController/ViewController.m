@@ -43,8 +43,9 @@
 //    picker.allowsMultipleSelection = YES;
 //    picker.maxMultipleCount = 10;
 //    
-//    picker.allowsEditing = YES;
-//    picker.cropSize = CGSizeMake(750, 750);
+    picker.allowsEditing = YES;
+    picker.cropSize = CGSizeMake(750, 750);
+//    picker.allowWhiteEdges = YES;
     
     [self presentViewController:picker animated:YES completion:nil];
 }

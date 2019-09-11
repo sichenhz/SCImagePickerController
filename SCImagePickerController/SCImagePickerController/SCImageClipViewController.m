@@ -174,16 +174,17 @@
 
     if (self.isAllowedWhiteEdges) {
         self.scrollView.minimumZoomScale = MIN(scaleWidth, scaleHeight);
+        self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
     } else {
         self.scrollView.minimumZoomScale = MAX(scaleWidth, scaleHeight);
+        self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
         
         if ((image.size.height / image.size.width) > (self.cropSize.height / self.cropSize.width)) {
-            self.scrollView.contentOffset = CGPointMake(0, (image.size.height * self.scrollView.minimumZoomScale - self.scrollView.frame.size.height) / 2);
+            self.scrollView.contentOffset = CGPointMake(0, (image.size.height * self.scrollView.zoomScale - self.scrollView.frame.size.height) / 2);
         } else {
-            self.scrollView.contentOffset = CGPointMake((image.size.width * self.scrollView.minimumZoomScale - self.scrollView.frame.size.width) / 2, 0);
+            self.scrollView.contentOffset = CGPointMake((image.size.width * self.scrollView.zoomScale - self.scrollView.frame.size.width) / 2, 0);
         }
     }
-    self.scrollView.zoomScale = self.scrollView.minimumZoomScale;
 }
 
 - (void)setCropSize:(CGSize)cropSize {
