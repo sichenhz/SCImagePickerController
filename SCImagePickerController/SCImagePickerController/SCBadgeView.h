@@ -6,7 +6,7 @@
 //  Copyright © 2016年 Ryan. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 typedef NS_ENUM(NSInteger, SCBadgeViewAlignment) {
     SCBadgeViewAlignmentLeft = 0,

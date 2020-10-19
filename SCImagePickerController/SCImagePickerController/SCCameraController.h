@@ -6,8 +6,8 @@
 //  Copyright © 2016年 sichenwang. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
+@import UIKit;
+@import AVFoundation;
 
 typedef NS_ENUM(NSInteger, SCCameraPosition) {
     SCCameraPositionRear,

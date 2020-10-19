@@ -99,7 +99,6 @@
         SCImageClipViewController *clip = [[SCImageClipViewController alloc] initWithImage:nil picker:self];
         if (!self.allowsEditing) clip.preview = YES;
         [self.navigationController pushViewController:clip animated:YES];
-        [self updateStatusBarHidden:YES animation:YES];
     }
 }
 
@@ -122,7 +121,6 @@
             [self.camera removeFromParentViewController];
             _isPresenting = NO;
         }];
-        [self updateStatusBarHidden:NO animation:NO];
     } else {
         [self.navigationController willMoveToParentViewController:self];
         self.navigationController.view.frame = self.view.frame;
@@ -139,7 +137,6 @@
         [self.view addSubview:self.navigationController.view];
         [self addChildViewController:self.navigationController];
         [self.navigationController didMoveToParentViewController:self];
-        [self updateStatusBarHidden:NO animation:NO];
     }
 }
 
@@ -159,7 +156,6 @@
             [nav.view removeFromSuperview];
             _isPresenting = NO;
         }];
-        [self updateStatusBarHidden:YES animation:NO];
     } else {
         SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
         _camera = camera;
@@ -173,7 +169,6 @@
             frame.origin.y = 0;
             camera.view.frame = frame;
         } completion:^(BOOL finished) {
-            [self updateStatusBarHidden:YES animation:NO];
             _isPresenting = NO;
         }];
         [self.view addSubview:camera.view];
@@ -182,31 +177,7 @@
     }
 }
 
-
-- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation {
-    self.statusBarHidden = hidden;
-    if (animation) {
-        [UIView animateWithDuration:0.3f animations:^{
-            [self setNeedsStatusBarAppearanceUpdate];
-        }];
-    } else {
-        [self setNeedsStatusBarAppearanceUpdate];
-    }
-}
-
 #pragma mark - Private Method
-
-- (void)finishPickingAssets {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
-        [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
-    }
-}
-
-- (void)finishPickingImage:(UIImage *)image {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
-        [self.delegate assetsPickerController:self didFinishPickingImage:image];
-    }
-}
 
 - (void)cancel {
     if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {

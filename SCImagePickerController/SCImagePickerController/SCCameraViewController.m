@@ -186,7 +186,6 @@
             [weakSelf.picker.view addSubview:clip.view];
             [weakSelf.picker addChildViewController:clip];
             [camera didMoveToParentViewController:weakSelf];
-            [weakSelf.picker updateStatusBarHidden:YES animation:NO];
         }
         else {
             NSLog(@"An error has occured: %@", error);

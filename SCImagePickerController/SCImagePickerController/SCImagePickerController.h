@@ -7,12 +7,32 @@
 //
 
 @import Photos;
+@import UIKit;
+@class SCImagePickerController;
 
-@protocol SCImagePickerControllerDelegate;
+@protocol SCImagePickerControllerDelegate <NSObject>
+
+@optional
+
+/** This method is called when photos are from albums. */
+- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
+/** This method is called when an image is from camera or cliping. */
+- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingImage:(UIImage *)image;
+/** This method is called when a video is selected. */
+- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingVideoUrl:(NSURL *)videoUrl;
+/** This method is called when imagePicker has canceled. */
+- (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
+/** This method is called when selected photos have overran the maximum number. */
+- (void)assetsPickerControllerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;
+
+@end
 
 typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
+    /** 所有相册列表，包括相机胶卷、智能相册、手动创建的相册等 */
     SCImagePickerControllerSourceTypePhotoLibrary,
+    /** 相机胶卷 */
     SCImagePickerControllerSourceTypeSavedPhotosAlbum,
+    /** 相机 */
     SCImagePickerControllerSourceTypeCamera
 };
 
@@ -26,38 +46,18 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 @property (nonatomic) BOOL allowsMultipleSelection; // default value is NO.
 @property (nonatomic) NSInteger maxMultipleCount; // default is unlimited and value is 0.
 
-// These two properties are available when allowsMultipleSelection value is NO.
+// These three properties are available when allowsMultipleSelection value is NO.
 @property (nonatomic) BOOL allowsEditing; // default value is NO.
 @property (nonatomic) CGSize cropSize; // default value is {[UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width}
 @property (nonatomic, getter=isAllowedWhiteEdges) BOOL allowWhiteEdges; // default is NO. If set this property to YES, the original image can be completely contained in the clipping area and export an image with white edges.
 
-@property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
 // Managing Asset Selection
+@property (nonatomic, strong) NSMutableArray <PHAsset *>*selectedAssets;
 - (void)selectAsset:(PHAsset *)asset;
 - (void)deselectAsset:(PHAsset *)asset;
 
-// User finish Actions
-- (void)finishPickingAssets;
-- (void)finishPickingImage:(UIImage *)image;
-- (void)cancel;
-
+// Switch between camera and albums
 - (void)presentAlbums;
 - (void)presentCamera;
-- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation;
-
-@end
-
-@protocol SCImagePickerControllerDelegate <NSObject>
-
-@optional
-
-- (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
-
-- (void)assetsPickerControllerDidOverrunMaxMultipleCount:(SCImagePickerController *)picker;
-
-// This method is called when photos are from albums.
-- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
-// This method is called when image is from camera or cliping.
-- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingImage:(UIImage *)image;
 
 @end

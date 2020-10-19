@@ -133,8 +133,8 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (void)attachRightBarButton {
     UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
                                                                        style:UIBarButtonItemStyleDone
-                                                                      target:self.picker
-                                                                      action:@selector(finishPickingAssets)];
+                                                                      target:self
+                                                                      action:@selector(selectButtonPressed)];
     doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
     
     self.badgeView = [[SCBadgeView alloc] init];
@@ -166,6 +166,12 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
         return [PHAsset fetchAssetsInAssetCollection:(PHAssetCollection *)collection options:options];
     } else {
         return nil;
+    }
+}
+
+- (void)selectButtonPressed {
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
+        [self.picker.delegate assetsPickerController:self.picker didFinishPickingAssets:self.picker.selectedAssets];
     }
 }
 

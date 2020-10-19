@@ -130,11 +130,9 @@
         if (self.image) {
             [self.view removeFromSuperview];
             [self removeFromParentViewController];
-            [self.picker updateStatusBarHidden:YES animation:NO];
         } else {
             [self.picker.selectedAssets removeObjectAtIndex:0];
             [self.navigationController popViewControllerAnimated:YES];
-            [self.picker updateStatusBarHidden:NO animation:NO];
         }
     } else {
         if ([self.delegate respondsToSelector:@selector(clipViewControllerDidCancel:)]) {
@@ -146,7 +144,9 @@
 - (void)selectButtonPressed:(UIButton *)button {
     UIImage *image = self.isPreview ? self.imageView.image : [self clibImage:self.imageView.image];
     if (self.picker) {
-        [self.picker finishPickingImage:image];
+        if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingImage:)]) {
+            [self.picker.delegate assetsPickerController:self.picker didFinishPickingImage:image];
+        }
     } else {
         if ([self.delegate respondsToSelector:@selector(clipViewController:didFinishClipImage:)]) {
             [self.delegate clipViewController:self didFinishClipImage:image];

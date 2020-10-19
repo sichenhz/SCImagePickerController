@@ -83,11 +83,6 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     if (self = [super initWithCollectionViewLayout:layout]) {
         CGFloat scale = [UIScreen mainScreen].scale;
         AssetGridThumbnailSize = CGSizeMake(layout.itemSize.width * scale, layout.itemSize.height * scale);
-        self.collectionView.allowsMultipleSelection = picker.allowsMultipleSelection;
-        [self.collectionView registerClass:SCGridViewCell.class
-                forCellWithReuseIdentifier:SCGridViewCellIdentifier];
-        [self.collectionView registerClass:SCCameraViewCell.class
-                forCellWithReuseIdentifier:SCCameraViewCellIdentifier];
     }
     return self;
 }
@@ -95,6 +90,12 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.collectionView.allowsMultipleSelection = self.picker.allowsMultipleSelection;
+    [self.collectionView registerClass:SCGridViewCell.class
+            forCellWithReuseIdentifier:SCGridViewCellIdentifier];
+    [self.collectionView registerClass:SCCameraViewCell.class
+            forCellWithReuseIdentifier:SCCameraViewCellIdentifier];
+
     self.imageManager = [[PHCachingImageManager alloc] init];
     [self resetCachedAssets];
 
@@ -104,8 +105,8 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     if (self.picker.allowsMultipleSelection) {
         UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成"
                                                                            style:UIBarButtonItemStyleDone
-                                                                          target:self.picker
-                                                                          action:@selector(finishPickingAssets)];
+                                                                          target:self
+                                                                          action:@selector(selectButtonPressed)];
         doneButtonItem.enabled = self.picker.selectedAssets.count > 0;
         
         self.badgeView = [[SCBadgeView alloc] init];
@@ -170,6 +171,12 @@ static NSString * const SCCameraViewCellIdentifier = @"SCCameraViewCellIdentifie
     }
     
     return assets;
+}
+
+- (void)selectButtonPressed {
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
+        [self.picker.delegate assetsPickerController:self.picker didFinishPickingAssets:self.picker.selectedAssets];
+    }
 }
 
 #pragma mark - Asset Caching
