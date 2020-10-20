@@ -68,7 +68,7 @@ NSString *const SCCameraEngineErrorDomain = @"SCCameraEngineErrorDomain";
 {
     self = [super init];
     if (self) {
-        _maxRecordTime = 70;
+        _maxRecordTime = 5;
         _videoPaths = [NSMutableArray array];
         _videoPath = kOriginVideoURL;
     }
@@ -211,7 +211,7 @@ NSString *const SCCameraEngineErrorDomain = @"SCCameraEngineErrorDomain";
         [[NSFileManager defaultManager] removeItemAtPath:kOriginVideoURL error:nil];
     }
     if ([[NSFileManager defaultManager] fileExistsAtPath:kCompressedVideoURL]) {
-        [[NSFileManager defaultManager] removeItemAtPath:kOriginVideoURL error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:kCompressedVideoURL error:nil];
     }
 }
 
@@ -679,6 +679,7 @@ NSString *const SCCameraEngineErrorDomain = @"SCCameraEngineErrorDomain";
     if (videosPathArray.count == 0) {
         return;
     }
+    NSLog(@"开始合成视频");
     AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
     
     AVMutableCompositionTrack *audioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio
@@ -708,7 +709,6 @@ NSString *const SCCameraEngineErrorDomain = @"SCCameraEngineErrorDomain";
         NSLog(@"errorVideo:%@%d",errorVideo,bl);
         totalDuration = CMTimeAdd(totalDuration, asset.duration);
     }
-    NSLog(@"%@",NSHomeDirectory());
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath]) {
         [[NSFileManager defaultManager] removeItemAtPath:outputPath error:NULL];
@@ -719,6 +719,7 @@ NSString *const SCCameraEngineErrorDomain = @"SCCameraEngineErrorDomain";
     exporter.outputFileType = AVFileTypeMPEG4;
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
+        NSLog(@"合成视频结束");
         if (handler) {
             handler();
         }

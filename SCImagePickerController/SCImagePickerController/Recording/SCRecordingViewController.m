@@ -380,14 +380,13 @@
 // 导出视频
 - (void)exportVideo {
     [self.camera stopCaptureHandler:^(UIImage *movieImage, NSString *videoPath) {
-        UISaveVideoAtPathToSavedPhotosAlbum(videoPath, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
-    }];
-}
+        if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingVideoUrl:)]) {
+            [self.delegate assetsPickerController:self didFinishPickingVideoUrl:[NSURL fileURLWithPath:videoPath]];
+        }
 
-- (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingVideoUrl:)]) {
-        [self.delegate assetsPickerController:self didFinishPickingVideoUrl:[NSURL URLWithString:videoPath]];
-    }
+        // 保存视频至相册
+        UISaveVideoAtPathToSavedPhotosAlbum(videoPath, nil, nil, nil);
+    }];
 }
 
 // 重置上一段视频tagView状态

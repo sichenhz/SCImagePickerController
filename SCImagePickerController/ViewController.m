@@ -19,12 +19,6 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor lightGrayColor];
-}
-
 - (IBAction)cameraButtonPressed:(id)sender {
     
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
@@ -105,8 +99,15 @@
 #pragma mark - SCImageClipViewControllerDelegate
 
 - (void)assetsPickerController:(SCRecordingViewController *)picker didFinishPickingVideoUrl:(NSURL *)videoUrl {
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    NSLog(@"当前录制视频地址 -> %@", videoUrl);
+    [picker dismissViewControllerAnimated:YES completion:^{
+        NSLog(@"当前录制视频地址 -> %@", videoUrl);
+        
+        AVPlayer *player = [AVPlayer playerWithURL:videoUrl];
+        AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+        playerLayer.frame = CGRectMake(0, 40, UIScreen.mainScreen.bounds.size.width, UIScreen.mainScreen.bounds.size.width);
+        [self.view.layer addSublayer:playerLayer];
+        [player play];
+    }];
 }
 
 @end
