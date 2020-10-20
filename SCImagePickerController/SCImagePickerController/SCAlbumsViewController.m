@@ -47,8 +47,8 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消"
                                                                              style:UIBarButtonItemStylePlain
-                                                                            target:self.picker
-                                                                            action:@selector(cancel)];
+                                                                            target:self
+                                                                            action:@selector(cancelButtonPressed:)];
 
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status == PHAuthorizationStatusNotDetermined) {
@@ -172,6 +172,12 @@ static NSString * const SCAlbumsViewCellReuseIdentifier = @"SCAlbumsViewCellReus
 - (void)selectButtonPressed {
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)]) {
         [self.picker.delegate assetsPickerController:self.picker didFinishPickingAssets:self.picker.selectedAssets];
+    }
+}
+
+- (void)cancelButtonPressed:(UIButton *)button {
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
+        [self.picker.delegate assetsPickerControllerDidCancel:self.picker];
     }
 }
 

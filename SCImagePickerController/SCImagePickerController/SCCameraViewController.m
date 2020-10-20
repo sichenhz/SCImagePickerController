@@ -168,7 +168,7 @@
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.cancelButton.frame = CGRectMake(20.0f, screenRect.size.height - 80.0f, 60.0f, 60.0f);
     [self.cancelButton setImage:[UIImage imageNamed:[@"SCImagePickerController.bundle" stringByAppendingPathComponent:@"cancel.png"]] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self.picker action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+    [self.cancelButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.cancelButton];
 }
 
@@ -215,6 +215,12 @@
 
 - (void)albumsButtonPressed:(UIButton *)button {
     [self.picker presentAlbums];
+}
+
+- (void)cancelButtonPressed:(UIButton *)button {
+    if ([self.picker.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
+        [self.picker.delegate assetsPickerControllerDidCancel:self.picker];
+    }
 }
 
 @end

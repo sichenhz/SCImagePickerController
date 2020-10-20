@@ -29,12 +29,12 @@
     return self.statusBarHidden;
 }
 
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationSlide;
-}
-
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
 }
 
 #pragma mark - Life Cycle
@@ -99,6 +99,7 @@
         SCImageClipViewController *clip = [[SCImageClipViewController alloc] initWithImage:nil picker:self];
         if (!self.allowsEditing) clip.preview = YES;
         [self.navigationController pushViewController:clip animated:YES];
+        [self updateStatusBarHidden:YES animation:YES];
     }
 }
 
@@ -121,6 +122,7 @@
             [self.camera removeFromParentViewController];
             _isPresenting = NO;
         }];
+        [self updateStatusBarHidden:NO animation:NO];
     } else {
         [self.navigationController willMoveToParentViewController:self];
         self.navigationController.view.frame = self.view.frame;
@@ -137,6 +139,7 @@
         [self.view addSubview:self.navigationController.view];
         [self addChildViewController:self.navigationController];
         [self.navigationController didMoveToParentViewController:self];
+        [self updateStatusBarHidden:NO animation:NO];
     }
 }
 
@@ -156,6 +159,7 @@
             [nav.view removeFromSuperview];
             _isPresenting = NO;
         }];
+        [self updateStatusBarHidden:YES animation:NO];
     } else {
         SCCameraViewController *camera = [[SCCameraViewController alloc] initWithPicker:self];
         _camera = camera;
@@ -170,6 +174,7 @@
             camera.view.frame = frame;
         } completion:^(BOOL finished) {
             _isPresenting = NO;
+            [self updateStatusBarHidden:YES animation:NO];
         }];
         [self.view addSubview:camera.view];
         [self addChildViewController:camera];
@@ -177,13 +182,18 @@
     }
 }
 
-#pragma mark - Private Method
-
-- (void)cancel {
-    if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)]) {
-        [self.delegate assetsPickerControllerDidCancel:self];
+- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation {
+    self.statusBarHidden = hidden;
+    if (animation) {
+        [UIView animateWithDuration:0.3f animations:^{
+            [self setNeedsStatusBarAppearanceUpdate];
+        }];
+    } else {
+        [self setNeedsStatusBarAppearanceUpdate];
     }
 }
+
+#pragma mark - Private Method
 
 - (void)updateDoneButton {
     for (UIViewController *viewController in self.navigationController.viewControllers) {

@@ -8,7 +8,6 @@
 
 #import "SCGridViewController.h"
 #import "SCImagePickerController.h"
-#import "SCCameraViewController.h"
 #import "SCGridViewCell.h"
 #import "SCCameraViewCell.h"
 #import "SCBadgeView.h"

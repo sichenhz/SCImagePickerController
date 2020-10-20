@@ -18,8 +18,6 @@
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingAssets:(NSArray <PHAsset *>*)assets;
 /** This method is called when an image is from camera or cliping. */
 - (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingImage:(UIImage *)image;
-/** This method is called when a video is selected. */
-- (void)assetsPickerController:(SCImagePickerController *)picker didFinishPickingVideoUrl:(NSURL *)videoUrl;
 /** This method is called when imagePicker has canceled. */
 - (void)assetsPickerControllerDidCancel:(SCImagePickerController *)picker;
 /** This method is called when selected photos have overran the maximum number. */
@@ -59,5 +57,6 @@ typedef NS_ENUM(NSInteger, SCImagePickerControllerSourceType) {
 // Switch between camera and albums
 - (void)presentAlbums;
 - (void)presentCamera;
+- (void)updateStatusBarHidden:(BOOL)hidden animation:(BOOL)animation;
 
 @end

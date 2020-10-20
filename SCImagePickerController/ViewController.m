@@ -9,8 +9,9 @@
 #import "ViewController.h"
 #import "SCImagePickerController.h"
 #import "SCImageClipViewController.h"
+#import "SCRecordingViewController.h"
 
-@interface ViewController ()<SCImagePickerControllerDelegate, SCImageClipViewControllerDelegate>
+@interface ViewController ()<SCImagePickerControllerDelegate, SCImageClipViewControllerDelegate, SCRecordingViewControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
 
@@ -18,7 +19,13 @@
 
 @implementation ViewController
 
-- (IBAction)startButtonPressed:(id)sender {
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor lightGrayColor];
+}
+
+- (IBAction)cameraButtonPressed:(id)sender {
     
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
@@ -31,10 +38,12 @@
     picker.allowsEditing = YES;
     picker.cropSize = CGSizeMake(750, 750);
     
+    picker.modalPresentationStyle = 0;
     [self presentViewController:picker animated:YES completion:nil];
 }
 
 - (IBAction)albumsButtonPressed:(id)sender {
+    
     SCImagePickerController *picker = [[SCImagePickerController alloc] init];
     picker.delegate = self;
     
@@ -42,12 +51,20 @@
     
 //    picker.allowsMultipleSelection = YES;
 //    picker.maxMultipleCount = 10;
-//    
+    
     picker.allowsEditing = YES;
     picker.cropSize = CGSizeMake(750, 750);
-//    picker.allowWhiteEdges = YES;
-    
+    picker.allowWhiteEdges = YES;
+
+    picker.modalPresentationStyle = 0;
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (IBAction)recordButtonPressed:(id)sender {
+    SCRecordingViewController *recording = [[SCRecordingViewController alloc] init];
+    recording.delegate = self;
+    recording.modalPresentationStyle = 0;
+    [self presentViewController:recording animated:YES completion:nil];
 }
 
 #pragma mark - SCImagePickerControllerDelegate
@@ -83,6 +100,13 @@
         NSLog(@"当前编辑图片 -> %@", image);
         self.imageView.image = image;
     }];
+}
+
+#pragma mark - SCImageClipViewControllerDelegate
+
+- (void)assetsPickerController:(SCRecordingViewController *)picker didFinishPickingVideoUrl:(NSURL *)videoUrl {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"当前录制视频地址 -> %@", videoUrl);
 }
 
 @end

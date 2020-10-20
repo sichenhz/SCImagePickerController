@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		25CA290A1DEC4B5800313F42 /* SCCameraController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F11DEC4B5800313F42 /* SCCameraController.m */; };
 		25CA290C1DEC4B5800313F42 /* SCCameraViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */; };
-		25CA290D1DEC4B5800313F42 /* SCCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */; };
 		25CA290E1DEC4B5800313F42 /* SCGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F81DEC4B5800313F42 /* SCGridViewController.m */; };
 		25CA290F1DEC4B5800313F42 /* SCImageClipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */; };
 		25CA29101DEC4B5800313F42 /* SCAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25CA28FB1DEC4B5800313F42 /* SCAlbumsViewCell.m */; };
@@ -25,6 +24,15 @@
 		25FE67451CEEB5FC0033483B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25FE67441CEEB5FC0033483B /* Assets.xcassets */; };
 		25FE67481CEEB5FC0033483B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25FE67461CEEB5FC0033483B /* LaunchScreen.storyboard */; };
 		25FE67601CEEBAA20033483B /* SCImagePickerController.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 25FE675F1CEEBAA20033483B /* SCImagePickerController.bundle */; };
+		C21D7373253D6AE30097E224 /* SCAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D7372253D6AE30097E224 /* SCAlertView.m */; };
+		C21D737F253D737A0097E224 /* SCCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D737E253D737A0097E224 /* SCCameraViewController.m */; };
+		C21D7396253D767A0097E224 /* SCTimeFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D7388253D767A0097E224 /* SCTimeFormat.m */; };
+		C21D7397253D767A0097E224 /* SCSnapButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D7389253D767A0097E224 /* SCSnapButton.m */; };
+		C21D7398253D767A0097E224 /* SCRecordingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D738A253D767A0097E224 /* SCRecordingViewController.m */; };
+		C21D7399253D767A0097E224 /* SCCameraEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D738D253D767A0097E224 /* SCCameraEngine.m */; };
+		C21D739A253D767A0097E224 /* SCProgressTagView.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D738E253D767A0097E224 /* SCProgressTagView.m */; };
+		C21D739B253D767A0097E224 /* SCProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D7392253D767A0097E224 /* SCProgressView.m */; };
+		C21D739C253D767A0097E224 /* WCLRecordEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = C21D7393253D767A0097E224 /* WCLRecordEncoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +40,6 @@
 		25CA28F11DEC4B5800313F42 /* SCCameraController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraController.m; sourceTree = "<group>"; };
 		25CA28F41DEC4B5800313F42 /* SCCameraViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewCell.h; sourceTree = "<group>"; };
 		25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewCell.m; sourceTree = "<group>"; };
-		25CA28F61DEC4B5800313F42 /* SCCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraViewController.h; sourceTree = "<group>"; };
-		25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewController.m; sourceTree = "<group>"; };
 		25CA28F81DEC4B5800313F42 /* SCGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCGridViewController.m; sourceTree = "<group>"; };
 		25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCImageClipViewController.m; sourceTree = "<group>"; };
 		25CA28FA1DEC4B5800313F42 /* SCAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlbumsViewCell.h; sourceTree = "<group>"; };
@@ -61,6 +67,24 @@
 		25FE67471CEEB5FC0033483B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		25FE67491CEEB5FC0033483B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		25FE675F1CEEBAA20033483B /* SCImagePickerController.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SCImagePickerController.bundle; sourceTree = "<group>"; };
+		C21D7371253D6AE20097E224 /* SCAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCAlertView.h; sourceTree = "<group>"; };
+		C21D7372253D6AE30097E224 /* SCAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCAlertView.m; sourceTree = "<group>"; };
+		C21D737D253D737A0097E224 /* SCCameraViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SCCameraViewController.h; sourceTree = "<group>"; };
+		C21D737E253D737A0097E224 /* SCCameraViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SCCameraViewController.m; sourceTree = "<group>"; };
+		C21D7388253D767A0097E224 /* SCTimeFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCTimeFormat.m; sourceTree = "<group>"; };
+		C21D7389253D767A0097E224 /* SCSnapButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCSnapButton.m; sourceTree = "<group>"; };
+		C21D738A253D767A0097E224 /* SCRecordingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCRecordingViewController.m; sourceTree = "<group>"; };
+		C21D738B253D767A0097E224 /* WCLRecordEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WCLRecordEncoder.h; sourceTree = "<group>"; };
+		C21D738C253D767A0097E224 /* SCProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCProgressView.h; sourceTree = "<group>"; };
+		C21D738D253D767A0097E224 /* SCCameraEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCCameraEngine.m; sourceTree = "<group>"; };
+		C21D738E253D767A0097E224 /* SCProgressTagView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCProgressTagView.m; sourceTree = "<group>"; };
+		C21D738F253D767A0097E224 /* SCRecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCRecordingViewController.h; sourceTree = "<group>"; };
+		C21D7390253D767A0097E224 /* SCSnapButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCSnapButton.h; sourceTree = "<group>"; };
+		C21D7391253D767A0097E224 /* SCTimeFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCTimeFormat.h; sourceTree = "<group>"; };
+		C21D7392253D767A0097E224 /* SCProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCProgressView.m; sourceTree = "<group>"; };
+		C21D7393253D767A0097E224 /* WCLRecordEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WCLRecordEncoder.m; sourceTree = "<group>"; };
+		C21D7394253D767A0097E224 /* SCProgressTagView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCProgressTagView.h; sourceTree = "<group>"; };
+		C21D7395253D767A0097E224 /* SCCameraEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCCameraEngine.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +143,7 @@
 		25FE674F1CEEB6180033483B /* SCImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
+				C21D7387253D767A0097E224 /* Recording */,
 				25CA29041DEC4B5800313F42 /* SCImagePickerController.h */,
 				25CA29051DEC4B5800313F42 /* SCImagePickerController.m */,
 				25CA28FC1DEC4B5800313F42 /* SCAlbumsViewController.h */,
@@ -127,10 +152,12 @@
 				25CA28F81DEC4B5800313F42 /* SCGridViewController.m */,
 				25CA29031DEC4B5800313F42 /* SCImageClipViewController.h */,
 				25CA28F91DEC4B5800313F42 /* SCImageClipViewController.m */,
-				25CA28F61DEC4B5800313F42 /* SCCameraViewController.h */,
-				25CA28F71DEC4B5800313F42 /* SCCameraViewController.m */,
+				C21D737D253D737A0097E224 /* SCCameraViewController.h */,
+				C21D737E253D737A0097E224 /* SCCameraViewController.m */,
 				25CA28F01DEC4B5800313F42 /* SCCameraController.h */,
 				25CA28F11DEC4B5800313F42 /* SCCameraController.m */,
+				C21D7371253D6AE20097E224 /* SCAlertView.h */,
+				C21D7372253D6AE30097E224 /* SCAlertView.m */,
 				25CA28F41DEC4B5800313F42 /* SCCameraViewCell.h */,
 				25CA28F51DEC4B5800313F42 /* SCCameraViewCell.m */,
 				25CA28FA1DEC4B5800313F42 /* SCAlbumsViewCell.h */,
@@ -143,6 +170,27 @@
 				25CA29071DEC4B5800313F42 /* UIImage+SCHelper.m */,
 			);
 			path = SCImagePickerController;
+			sourceTree = "<group>";
+		};
+		C21D7387253D767A0097E224 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				C21D738F253D767A0097E224 /* SCRecordingViewController.h */,
+				C21D738A253D767A0097E224 /* SCRecordingViewController.m */,
+				C21D7395253D767A0097E224 /* SCCameraEngine.h */,
+				C21D738D253D767A0097E224 /* SCCameraEngine.m */,
+				C21D738B253D767A0097E224 /* WCLRecordEncoder.h */,
+				C21D7393253D767A0097E224 /* WCLRecordEncoder.m */,
+				C21D7391253D767A0097E224 /* SCTimeFormat.h */,
+				C21D7388253D767A0097E224 /* SCTimeFormat.m */,
+				C21D7390253D767A0097E224 /* SCSnapButton.h */,
+				C21D7389253D767A0097E224 /* SCSnapButton.m */,
+				C21D738C253D767A0097E224 /* SCProgressView.h */,
+				C21D7392253D767A0097E224 /* SCProgressView.m */,
+				C21D7394253D767A0097E224 /* SCProgressTagView.h */,
+				C21D738E253D767A0097E224 /* SCProgressTagView.m */,
+			);
+			path = Recording;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,19 +266,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C21D7398253D767A0097E224 /* SCRecordingViewController.m in Sources */,
 				25CA290F1DEC4B5800313F42 /* SCImageClipViewController.m in Sources */,
 				25FE67401CEEB5FC0033483B /* ViewController.m in Sources */,
-				25CA290D1DEC4B5800313F42 /* SCCameraViewController.m in Sources */,
 				25CA29121DEC4B5800313F42 /* SCBadgeView.m in Sources */,
+				C21D737F253D737A0097E224 /* SCCameraViewController.m in Sources */,
 				25CA29101DEC4B5800313F42 /* SCAlbumsViewCell.m in Sources */,
+				C21D7373253D6AE30097E224 /* SCAlertView.m in Sources */,
 				25FE673D1CEEB5FC0033483B /* AppDelegate.m in Sources */,
+				C21D739B253D767A0097E224 /* SCProgressView.m in Sources */,
+				C21D739A253D767A0097E224 /* SCProgressTagView.m in Sources */,
+				C21D7396253D767A0097E224 /* SCTimeFormat.m in Sources */,
 				25CA290E1DEC4B5800313F42 /* SCGridViewController.m in Sources */,
 				25CA29131DEC4B5800313F42 /* SCGridViewCell.m in Sources */,
 				25CA290C1DEC4B5800313F42 /* SCCameraViewCell.m in Sources */,
 				25CA290A1DEC4B5800313F42 /* SCCameraController.m in Sources */,
+				C21D7397253D767A0097E224 /* SCSnapButton.m in Sources */,
+				C21D7399253D767A0097E224 /* SCCameraEngine.m in Sources */,
 				25FE673A1CEEB5FC0033483B /* main.m in Sources */,
 				25CA29111DEC4B5800313F42 /* SCAlbumsViewController.m in Sources */,
 				25CA29151DEC4B5800313F42 /* UIImage+SCHelper.m in Sources */,
+				C21D739C253D767A0097E224 /* WCLRecordEncoder.m in Sources */,
 				25CA29141DEC4B5800313F42 /* SCImagePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
